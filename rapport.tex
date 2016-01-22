@@ -24,20 +24,20 @@ Afin de remplir les objectifs du projet, nous avons décidé de développer un s
 Nous détaillerons d'abord les fonctionnalités de notre application, puis quelques détails d'implémentations sur chaque fonction susdite. 
 \section{Fonctionnalités}
 \subsection{Connexion Client/Serveur}
-Cette première étape de notre application permet au serveur de gérer des utilisateurs se connectant, même de manière simultanés, ainsi que l'envoi de leur messages. Lorsqu'un utilisateur envoie un message, le serveur le retransmet à tous les utilisateurs afin que chacun puisse le lire. 
+Cette première étape dans la conception de notre application permetera au serveur de gérer des clients se connectant en envoyant des messages de manière simultanés. Lorsqu'un utilisateur envoie un message, le serveur le retransmet à tous les clients.
 \subsection{Analyseur syntaxique}
-Une fois la connexion établie, l'envoie d'un message entraînera une analyse syntaxique de chaque mot, par le serveur. Le message sera décomposé, et comparé à un dictionnaire, qui pourra à son tour censurer les mots sensibles. Le message est enfin reconstruit et envoyé à tous les utilisateurs.  
+Une fois la connexion établie, l'envoie d'un message entraînera une analyse syntaxique de chaque mot par le serveur. Le message sera décomposé, et comparé à un dictionnaire, qui pourra à son tour censurer certaines parties du message. La chaine est enfin reconstruite et envoyée à tous les utilisateurs.  
 \subsection{Pérennisation des informations utilisateur}
-L'application est actuellement en état de stase. Une application moderne se doit d'évoluer dans le temps. C'est dans cette perspective que nous conférerons à Sublim Telegram le pouvoir de pérenniser ses données. Le serveur conservera dans un fichier les adresses des utilisateurs associées à leurs pseudonymes, ainsi que d'autres informations qui arriveront dans la suite de la conception. 
+L'application est actuellement en état de stase. Une application moderne se doit d'évoluer dans le temps. C'est dans cette perspective que nous conférerons à \emph{Sublim Telegram} le pouvoir de pérenniser ses données. Le serveur conservera dans un fichier les adresses des utilisateurs associées à leurs pseudonymes, ainsi que d'autres informations qui arriveront dans la suite de la conception. 
 \subsection{Gestion des droits et hiérarchisation}
-Maintenant que notre application est inscrite dans le temps, il faut l'étendre dans une dimension spatiale. Jusque ici, tous les utilisateurs sont libres et égaux en droits. Néanmoins si tous les utilisateurs ont les mêmes droits, la race humaine veut que les plus forts s'imposent naturellement. C'est dans cette état d'anarchie que nous souhaitons instaurer une hiérarchie. Nulle société ne peut évoluer sans souverain. Un système de modération sera intégré à Sublim Telegram.  
+Maintenant que notre application est inscrite dans le temps, il faut l'étendre dans une dimension spatiale. Jusque ici, tous les utilisateurs sont libres et égaux en droits. Néanmoins, une hierarchie naturelle est inévatable, la race humaine veut que les plus forts s'imposent naturellement. C'est dans cette état d'anarchie que nous souhaitons instaurer une hiérarchie. Nulle société ne peut évoluer sans souverain. Un système de modération sera intégré à \emph{Sublim Telegram}.  
 \subsection{Salles de discutions}
 \emph{Diviser pour mieux régner}. 
 L'univers étant en constante expansion, ce qui implique une séparation de ses astres. Il en va de même pour n'importe quel système un tant soi peu ambitieux. Nous confierons à \emph{Sublim Telegram} la capacité de répartir ses utilisateurs en différentes salles.  
 \subsection{Activités multi-utilisateurs}
-l'Homme a ses limites. Au début de la civilisation, l'Humain a compris, par l'agriculture notamment, qu'il devait coopérer pour espérer accomplir de grandes choses. Outre la communication nous inséminerons dans \emph{Sublim Telegram}, un ensemble d'activités multi-joueurs procurant une certaine satisfaction aux utilisateurs.
+l'Homme a ses limites. Au début de la civilisation, l'Humain a compris, par l'agriculture notamment, qu'il devait coopérer pour espérer accomplir de grandes choses. Outre la communication nous inséminerons dans \emph{Sublim Telegram}, un ensemble d'activités multi-joueurs dont pourrons s'adonner les utilisateurs.
 \subsection{Interface Homme Machine User-friendly}
-Pour les grecs anciens, le "cosmos" représente l'ordre et la parure: deux entitées intimement liées. La cosmétique de \emph{Sublim Telegram} garantira son ordre.
+Pour les grecs anciens, le "cosmos" représente l'ordre et la parure: deux entitées intimement liées. La cosmétique de \emph{Sublim Telegram} saura calmer les frustrations de l'utilisateur et par consequent garantira l'ordre.
 \section{Implémentation}
-
+ToDo
 \end{document}
