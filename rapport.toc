@@ -8,4 +8,3 @@
 \contentsline {subsection}{\numberline {2.5}Salles de discutions}{3}
 \contentsline {subsection}{\numberline {2.6}Activit\IeC {\'e}s multi-utilisateurs}{4}
 \contentsline {subsection}{\numberline {2.7}Interface Homme Machine User-friendly}{4}
-\contentsline {section}{\numberline {3}Impl\IeC {\'e}mentation}{4}

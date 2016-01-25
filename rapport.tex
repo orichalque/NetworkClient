@@ -8,7 +8,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \author{Thibault \bsc{Béziers la Fosse}, Benjamin \bsc{Moreau}}
-\title{De la création de Sublim Telegram}
+\title{Spécifications de Sublim Telegram: Un système de communication}
 \pagestyle{fancy}
 
 
@@ -23,21 +23,19 @@ Dans le cadre de notre module de Réseaux en Master ALMA, nous avons eu à crée
 Afin de remplir les objectifs du projet, nous avons décidé de développer un système de communication synchrone par terminal. Des fonctionnalités seront ajoutés au cours de l'avancement du projet. 
 Nous détaillerons d'abord les fonctionnalités de notre application, puis quelques détails d'implémentations sur chaque fonction susdite. 
 \section{Fonctionnalités}
+Les fonctionnalités présentées ci-dessous sont listées par ordre de priorité.
 \subsection{Connexion Client/Serveur}
-Cette première étape dans la conception de notre application permetera au serveur de gérer des clients se connectant en envoyant des messages de manière simultanés. Lorsqu'un utilisateur envoie un message, le serveur le retransmet à tous les clients.
+Cette première étape dans la conception de notre application permettra au serveur de gérer des clients se connectant en envoyant des messages de manière simultanés. Lorsqu'un utilisateur envoie un message, le serveur le retransmettra à tous les clients.
 \subsection{Analyseur syntaxique}
-Une fois la connexion établie, l'envoie d'un message entraînera une analyse syntaxique de chaque mot par le serveur. Le message sera décomposé, et comparé à un dictionnaire, qui pourra à son tour censurer certaines parties du message. La chaine est enfin reconstruite et envoyée à tous les utilisateurs.  
+Une fois la connexion établie, l'envoie d'un message entraînera une analyse syntaxique de chaque mot par le serveur. Le message sera décomposé, et comparé à un dictionnaire, qui pourra à son tour censurer certaines parties du message. La chaîne est enfin reconstruite et envoyée à tous les utilisateurs.  
 \subsection{Pérennisation des informations utilisateur}
 L'application est actuellement en état de stase. Une application moderne se doit d'évoluer dans le temps. C'est dans cette perspective que nous conférerons à \emph{Sublim Telegram} le pouvoir de pérenniser ses données. Le serveur conservera dans un fichier les adresses des utilisateurs associées à leurs pseudonymes, ainsi que d'autres informations qui arriveront dans la suite de la conception. 
 \subsection{Gestion des droits et hiérarchisation}
-Maintenant que notre application est inscrite dans le temps, il faut l'étendre dans une dimension spatiale. Jusque ici, tous les utilisateurs sont libres et égaux en droits. Néanmoins, une hierarchie naturelle est inévatable, la race humaine veut que les plus forts s'imposent naturellement. C'est dans cette état d'anarchie que nous souhaitons instaurer une hiérarchie. Nulle société ne peut évoluer sans souverain. Un système de modération sera intégré à \emph{Sublim Telegram}.  
+La prochaine étape consistera à instaurer une hiérarchie au sein du système. Un utilisateur (client associé à une IP) pourra être un utilisateur ordinaire ou un administrateur qui aura donc certains droits spécifiques (modification des droits utilisateurs, et exclusions).
 \subsection{Salles de discutions}
-\emph{Diviser pour mieux régner}. 
-L'univers étant en constante expansion, ce qui implique une séparation de ses astres. Il en va de même pour n'importe quel système un tant soi peu ambitieux. Nous confierons à \emph{Sublim Telegram} la capacité de répartir ses utilisateurs en différentes salles.  
+Une amélioration importante de \emph{Sublim Telegram} pourra alors être ajoutée. L'objectif est de pouvoir créer différentes salles de discussions gérées du coté serveur.
 \subsection{Activités multi-utilisateurs}
-l'Homme a ses limites. Au début de la civilisation, l'Humain a compris, par l'agriculture notamment, qu'il devait coopérer pour espérer accomplir de grandes choses. Outre la communication nous inséminerons dans \emph{Sublim Telegram}, un ensemble d'activités multi-joueurs dont pourrons s'adonner les utilisateurs.
+Comme sur certains forum, il serait intéressant de proposer aux utilisateurs des activités ou jeux faisant participer l'ensemble de la salle de discussion.
 \subsection{Interface Homme Machine User-friendly}
-Pour les grecs anciens, le "cosmos" représente l'ordre et la parure: deux entitées intimement liées. La cosmétique de \emph{Sublim Telegram} saura calmer les frustrations de l'utilisateur et par consequent garantira l'ordre.
-\section{Implémentation}
-ToDo
+Enfin, la dernière étape consistera a confier à \emph{Sublim Telegram}. une interface graphique digne de son nom.
 \end{document}
