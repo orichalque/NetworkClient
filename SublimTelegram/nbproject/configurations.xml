@@ -15,7 +15,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>client.c</itemPath>
-      <itemPath>main.cpp</itemPath>
+      <itemPath>main.c</itemPath>
       <itemPath>server.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -44,7 +44,7 @@
       </item>
       <item path="client.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="server.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -75,7 +75,7 @@
       </item>
       <item path="client.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="server.c" ex="false" tool="0" flavor2="0">
       </item>

@@ -62,17 +62,17 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sublimtelegram: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sublimtelegram ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sublimtelegram ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/client.o: client.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/client.o client.c
 
-${OBJECTDIR}/main.o: main.cpp 
+${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/server.o: server.c 
 	${MKDIR} -p ${OBJECTDIR}
