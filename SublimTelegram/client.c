@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
     bcopy((char*)ptr_host->h_addr, (char*)&adresse_locale.sin_addr, ptr_host->h_length);
     adresse_locale.sin_family = AF_INET;
     
-    adresse_locale.sin_port = htons(5001);
+    adresse_locale.sin_port = htons(5003);
     /*-----------------------------------------------------------*/
     
     printf("numero de port pour la connexion au serveur : %d \n", ntohs(adresse_locale.sin_port));
@@ -82,9 +82,10 @@ int main(int argc, char **argv) {
 		printf("message envoye au serveur. \n");
 		            
 		/* lecture de la reponse en provenance du serveur */
-		while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
+		if((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
 			printf("reponse du serveur : \n");
 			write(1,buffer,longueur);
+			
 		}
     }
     
