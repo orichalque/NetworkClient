@@ -46,9 +46,9 @@ void *renvoi_message(void *arg){
     
    
     buffer[longueur] ='\0';
-    snprintf(message, sizeof message, "%s %s", date, buffer);
+    snprintf(message, sizeof message, "%s %s \n", date, buffer);
      printf("%s \n", message);
-    write(*sock,message,strlen(buffer)+1);
+    write(*sock,message,strlen(message)+1);
 
 	pthread_exit(NULL);
 }
@@ -82,7 +82,7 @@ main(int argc, char **argv) {
     adresse_locale.sin_family		= ptr_hote->h_addrtype; 	/* ou AF_INET */
     adresse_locale.sin_addr.s_addr	= INADDR_ANY; 			/* ou AF_INET */
 
-    adresse_locale.sin_port = htons(5003);
+    adresse_locale.sin_port = htons(5000);
     /*-----------------------------------------------------------*/
     
     printf("numero de port pour la connexion au serveur : %d \n", 
