@@ -7,6 +7,9 @@ Serveur à lancer avant le client
 #include <sys/socket.h>
 #include <netdb.h> 		/* pour hostent, servent */
 #include <string.h> 		/* pour bcopy, ... */  
+#include <pthread.h> //threads
+#include <unistd.h>
+#include <time.h> 
 #define TAILLE_MAX_NOM 256
 
 typedef struct sockaddr sockaddr;
@@ -15,35 +18,34 @@ typedef struct hostent hostent;
 typedef struct servent servent;
 
 /*------------------------------------------------------*/
-void renvoi (int sock) {
+void *thread_1(void *arg){
+	printf("yolo \n");
+	(void) arg;
+	pthread_exit(NULL);
+}
 
-    char buffer[256];
+void *renvoi_message(void *arg){
+	char date[256];
+	char buffer[256];
     int longueur;
-   
-    if ((longueur = read(sock, buffer, sizeof(buffer))) <= 0) 
-    	return;
+    int * sock = arg;
+    time_t timestamp = time(NULL); 
+    if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0) 
+    	pthread_exit(NULL);
     
-    printf("message lu : %s \n", buffer);
-    
-    buffer[0] = 'R';
-    buffer[1] = 'E';
     buffer[longueur] = '#';
     buffer[longueur+1] ='\0';
     
-    printf("message apres traitement : %s \n", buffer);
-    
-    printf("renvoi du message traite.\n");
+    printf(": %s \n", buffer);
 
-    /* mise en attente du prgramme pour simuler un delai de transmission */
-    sleep(3);
+    buffer[longueur] = '#';
+    buffer[longueur+1] ='\0';
     
-    write(sock,buffer,strlen(buffer)+1);
-    
-    printf("message envoye. \n");
-        
-    return;
-    
+    write(*sock,buffer,strlen(buffer)+1);
+
+	pthread_exit(NULL);
 }
+
 /*------------------------------------------------------*/
 
 /*------------------------------------------------------*/
@@ -73,7 +75,7 @@ main(int argc, char **argv) {
     adresse_locale.sin_family		= ptr_hote->h_addrtype; 	/* ou AF_INET */
     adresse_locale.sin_addr.s_addr	= INADDR_ANY; 			/* ou AF_INET */
 
-    adresse_locale.sin_port = htons(5000);
+    adresse_locale.sin_port = htons(5001);
     /*-----------------------------------------------------------*/
     
     printf("numero de port pour la connexion au serveur : %d \n", 
@@ -92,10 +94,11 @@ main(int argc, char **argv) {
     }
     
     /* initialisation de la file d'ecoute */
-    listen(socket_descriptor,5);
+    //listen(socket_descriptor,5);
 
     /* attente des connexions et traitement des donnees recues */
     for(;;) {
+	    listen(socket_descriptor,5);
 		longueur_adresse_courante = sizeof(adresse_client_courant);
 		
 		/* adresse_client_courant sera renseigné par accept via les infos du connect */
@@ -110,12 +113,14 @@ main(int argc, char **argv) {
 		
 		/* traitement du message */
 		printf("reception d'un message.\n");
-		if (fork() == 0) {
-			renvoi(nouv_socket_descriptor);						
-			close(nouv_socket_descriptor);
-		} else {
-			close(nouv_socket_descriptor);
-		}
+		
+	
+		pthread_t t1;
+    	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
+    		perror("pthread_create");    	
+    	}
+		//close(nouv_socket_descriptor);
+
     }
 }
 
