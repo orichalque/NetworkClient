@@ -17,6 +17,42 @@ typedef struct sockaddr_in sockaddr_in;
 typedef struct hostent hostent;
 typedef struct servent servent;
 
+typedef struct{	
+	int sz;
+	int socks[];
+} users;
+
+users user;
+
+int addUser(users *u, int* sock) {
+	if (! u -> sz){
+		printf("Liste vide \n");
+		u -> sz ++;
+		u -> socks[0] = *sock;
+	} else {
+		int exists = 0;
+		//verification de la presence d'une sock avant son ajout
+		if (u -> sz >= 10){
+			printf("trop de monde \n");
+			return exists;
+		}		
+		int i;
+		for (i = 0; i < u -> sz; ++i){
+			if (&u -> socks[i] == sock){
+				exists = 1; //sock deja present
+				printf("deja present \n");
+			} 
+		}		
+		if (!exists){
+			printf("ajoute \n");
+			printf("%d", *sock);
+			u -> socks[u -> sz] = *sock;
+			u -> sz ++;			
+		}
+	}
+}
+
+
 /*------------------------------------------------------*/
 void *thread_1(void *arg){
 	printf("yolo \n");
@@ -30,7 +66,7 @@ void *renvoi_message(void *arg){
 	char message[512];
     int longueur;
     int * sock = arg;
-    
+    addUser(&user, sock);
     time_t seconds;
     struct tm instant;
     
@@ -57,7 +93,7 @@ void *renvoi_message(void *arg){
 
 /*------------------------------------------------------*/
 main(int argc, char **argv) {
-  
+  	
     int 		socket_descriptor, 		/* descripteur de socket */
 			nouv_socket_descriptor, 	/* [nouveau] descripteur de socket */
 			longueur_adresse_courante; 	/* longueur d'adresse courante d'un client */
@@ -68,6 +104,7 @@ main(int argc, char **argv) {
     char 		machine[TAILLE_MAX_NOM+1]; 	/* nom de la machine locale */
     
     gethostname(machine,TAILLE_MAX_NOM);		/* recuperation du nom de la machine */
+    user.sz = 0; //initialisation des users
     
     /* recuperation de la structure d'adresse en utilisant le nom */
     if ((ptr_hote = gethostbyname(machine)) == NULL) {

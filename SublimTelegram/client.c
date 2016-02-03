@@ -23,6 +23,7 @@ servent *ptr_service;
 char *host;
 char *pseudo;
 char pseudoWithComa[14];
+
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
@@ -50,10 +51,10 @@ void *envoi_message(void* arg){
     printf("message envoye au serveur. \n");
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
-	//printf("reponse du serveur : \n");
-	write(1,buffer,longueur);
-	//fermeture du socket
-	close(socket_descriptor);
+		//printf("reponse du serveur : \n");
+		write(1,buffer,longueur);
+		//fermeture du socket
+		//close(socket_descriptor);
     }
     pthread_exit(NULL);
 }
@@ -119,7 +120,6 @@ int main(int argc, char **argv) {
     signal(SIGINT,stop);
 
     while (1){
-		printf("-> ");
 	   	scanf("%s", mesg);
 		pthread_t t1;
 		if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
