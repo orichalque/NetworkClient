@@ -22,14 +22,16 @@ hostent *ptr_host;
 servent *ptr_service;
 char *host;
 char *pseudo;
-
+char pseudoWithComa[14];
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
     char mesg[512];
     int longueur;
     int socket_descriptor;
-    strcpy(mesg,arg);
+    strcpy(mesg, pseudoWithComa);
+    strcat(mesg, arg);
+    
     //creation de la socket
     if ((socket_descriptor = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 	perror("erreur : impossible de creer la socket de connexion avec le serveur.");
@@ -48,7 +50,7 @@ void *envoi_message(void* arg){
     printf("message envoye au serveur. \n");
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
-	printf("reponse du serveur : \n");
+	//printf("reponse du serveur : \n");
 	write(1,buffer,longueur);
 	//fermeture du socket
 	close(socket_descriptor);
@@ -96,6 +98,8 @@ int main(int argc, char **argv) {
     
     printf("connecte au serveur  : %s \n", host);
     printf("sous le pseudo   : %s \n", pseudo);
+    strcpy(pseudoWithComa, pseudo);
+    strcat(pseudoWithComa, ": ");
     
     if ((ptr_host = gethostbyname(host)) == NULL) {
 		perror("erreur : impossible de trouver le serveur a partir de son adresse.");
@@ -115,12 +119,12 @@ int main(int argc, char **argv) {
     signal(SIGINT,stop);
 
     while (1){
-    	printf("Rentrer un message a envoyer \n");
-   	scanf("%s", mesg);
-	pthread_t t1;
-	if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
-    		perror("Impossible de creer le thread d'envoi de message");
-    	}
+		printf("-> ");
+	   	scanf("%s", mesg);
+		pthread_t t1;
+		if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
+				perror("Impossible de creer le thread d'envoi de message");
+			}
     }
       
     exit(0);

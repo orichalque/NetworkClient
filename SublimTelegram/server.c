@@ -25,7 +25,7 @@ void *thread_1(void *arg){
 }
 
 void *renvoi_message(void *arg){
-	char date[256];
+	char date[11];
 	char buffer[256];
 	char message[512];
     int longueur;
@@ -37,7 +37,7 @@ void *renvoi_message(void *arg){
     time(&seconds);
     instant = *localtime(&seconds);
     
-	snprintf(date, sizeof date, "%d:%d:%d", instant.tm_hour, instant.tm_min, instant.tm_sec);
+	snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 	
 
     
@@ -118,10 +118,7 @@ main(int argc, char **argv) {
 			exit(1);
 		}
 		
-		/* traitement du message */
-		printf("reception d'un message.\n");
 		
-	
 		pthread_t t1;
     	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
     		perror("pthread_create");    	
