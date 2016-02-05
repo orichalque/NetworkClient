@@ -77,8 +77,10 @@ void *renvoi_message(void *arg){
 	
 	//boucle de communication != boucle d'acceptation de connexion
     while(1){
-		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0) 
+		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
+			printf("%i\n",*sock);
 			pthread_exit(NULL);
+		}
 		
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
