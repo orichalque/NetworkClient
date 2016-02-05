@@ -28,7 +28,7 @@ char pseudoWithComa[14];
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
-    char mesg[512];
+    char mesg[490];
     int longueur;
     strcpy(mesg, pseudoWithComa);
     strcat(mesg, arg);
@@ -41,7 +41,6 @@ void *envoi_message(void* arg){
     printf("message envoye au serveur. \n");
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
-		//printf("reponse du serveur : \n");
 		write(socket_descriptor,buffer,longueur);
     }
     pthread_exit(NULL);
@@ -50,14 +49,14 @@ void *envoi_message(void* arg){
 // Fonction d'arret
 void stop(){
     //message automatique pour prevenir de la deconnexion
-    char mesg[512];
+    char mesg[490];
     int longueur;
     strcpy(mesg,strcat(pseudo," est deconnecte."));
 
     // envoi du message vers le serveur
     if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
-	perror("erreur : impossible d'ecrire le message destine au serveur.");
-	exit(1);
+		perror("erreur : impossible d'ecrire le message destine au serveur.");
+		exit(1);
     }
     close(socket_descriptor);
     
@@ -66,7 +65,7 @@ void stop(){
 }
 
 int main(int argc, char **argv) {	
-    char mesg[512];
+    char mesg[490];
     if (argc != 3) { // verification du nombre d'argument
 		perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme>");
 		exit(1);
@@ -94,13 +93,13 @@ int main(int argc, char **argv) {
 
     //creation de la socket
     if ((socket_descriptor = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-	perror("erreur : impossible de creer la socket de connexion avec le serveur.");
-	exit(1);
+		perror("erreur : impossible de creer la socket de connexion avec le serveur.");
+		exit(1);
     }
     // tentative de connexion avec le serveur
     if ((connect(socket_descriptor, (sockaddr*)(&adresse_locale), sizeof(adresse_locale))) < 0) {
-	perror("erreur : impossible de se connecter au serveur.");
-	exit(1);
+		perror("erreur : impossible de se connecter au serveur.");
+		exit(1);
     }
 
     printf("connexion etablie avec le serveur. \n");
@@ -109,7 +108,9 @@ int main(int argc, char **argv) {
     signal(SIGINT,stop);
 
     while (1){
-	   	scanf("%s", mesg);
+    	do{
+	   		scanf("%s", mesg);
+	   	}while(strlen(mesg)>5);
 		pthread_t t1;
 		if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
 				perror("Impossible de creer le thread d'envoi de message");

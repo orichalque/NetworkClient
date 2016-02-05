@@ -63,7 +63,7 @@ void *thread_1(void *arg){
 void *renvoi_message(void *arg){
 	char date[11];
 	char buffer[256];
-	char message[512];
+	char message[490];
     int longueur;
     int * sock = arg;
     addUser(&user, sock);
