@@ -35,14 +35,14 @@ void *envoi_message(void* arg){
     
     // envoi du message vers le serveur
     if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
-	perror("erreur : impossible d'ecrire le message destine au serveur.");
-	exit(1);
+		perror("erreur : impossible d'ecrire le message destine au serveur.");
+		exit(1);
     }
     printf("message envoye au serveur. \n");
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
 		//printf("reponse du serveur : \n");
-		write(1,buffer,longueur);
+		write(socket_descriptor,buffer,longueur);
     }
     pthread_exit(NULL);
 }

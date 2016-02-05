@@ -17,7 +17,7 @@ typedef struct sockaddr_in sockaddr_in;
 typedef struct hostent hostent;
 typedef struct servent servent;
 
-typedef struct{	
+typedef struct{
 	int sz;
 	int socks[];
 } users;
@@ -75,17 +75,16 @@ void *renvoi_message(void *arg){
     
 	snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 	
-
-    
-    if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0) 
-    	pthread_exit(NULL);
-    
-   
-    buffer[longueur] ='\0';
-    snprintf(message, sizeof message, "%s %s \n", date, buffer);
-     printf("%s \n", message);
-    write(*sock,message,strlen(message)+1);
-
+	//boucle de communication != boucle d'acceptation de connexion
+    while(1){
+		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0) 
+			pthread_exit(NULL);
+		
+		buffer[longueur] ='\0';
+		snprintf(message, sizeof message, "%s %s \n", date, buffer);
+		 printf("%s \n", message);
+		write(*sock,message,strlen(message)+1);
+    }
 	pthread_exit(NULL);
 }
 
@@ -137,11 +136,11 @@ main(int argc, char **argv) {
 		exit(1);
     }
     
-    /* initialisation de la file d'ecoute */
-    //listen(socket_descriptor,5);
+    
 
     /* attente des connexions et traitement des donnees recues */
     for(;;) {
+    	/* initialisation de la file d'ecoute */
 	    listen(socket_descriptor,5);
 		longueur_adresse_courante = sizeof(adresse_client_courant);
 		
@@ -154,7 +153,6 @@ main(int argc, char **argv) {
 			perror("erreur : impossible d'accepter la connexion avec le client.");
 			exit(1);
 		}
-		
 		
 		pthread_t t1;
     	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
