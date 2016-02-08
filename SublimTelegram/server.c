@@ -70,21 +70,19 @@ void *renvoi_message(void *arg){
     time_t seconds;
     struct tm instant;
     
-    time(&seconds);
-    instant = *localtime(&seconds);
-    
-	snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
+   
 	
 	//boucle de communication != boucle d'acceptation de connexion
     while(1){
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
-			printf("%i\n",*sock);
 			pthread_exit(NULL);
 		}
-		
+		time(&seconds);
+    	instant = *localtime(&seconds);
+		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
-		 printf("%s \n", message);
+		printf("%s \n", message);
 		write(*sock,message,strlen(message)+1);
     }
 	pthread_exit(NULL);
