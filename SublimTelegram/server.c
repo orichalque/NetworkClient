@@ -1,54 +1,31 @@
 /*----------------------------------------------
 Serveur à lancer avant le client
 ------------------------------------------------*/
-#include <stdlib.h>
-#include <stdio.h>
-#include <linux/types.h> 	/* pour les sockets */
-#include <sys/socket.h>
-#include <netdb.h> 		/* pour hostent, servent */
-#include <string.h> 		/* pour bcopy, ... */  
-#include <pthread.h> //threads
-#include <unistd.h>
-#include <time.h> 
-#define TAILLE_MAX_NOM 256
-
-typedef struct sockaddr sockaddr;
-typedef struct sockaddr_in sockaddr_in;
-typedef struct hostent hostent;
-typedef struct servent servent;
-
-typedef struct{
-	int sz;
-	int socks[];
-} users;
+#include "server.h"
 
 users user;
 
 int addUser(users *u, int* sock) {
 	if (! u -> sz){
-		printf("Liste vide \n");
 		u -> sz ++;
 		u -> socks[0] = *sock;
+		return 1;
 	} else {
-		int exists = 0;
 		//verification de la presence d'une sock avant son ajout
 		if (u -> sz >= 10){
-			printf("trop de monde \n");
-			return exists;
+			return 0;
 		}		
 		int i;
 		for (i = 0; i < u -> sz; ++i){
 			if (&u -> socks[i] == sock){
-				exists = 1; //sock deja present
-				printf("deja present \n");
+				//sock deja present
+				return 0;
 			} 
 		}		
-		if (!exists){
-			printf("ajoute \n");
-			printf("%d", *sock);
-			u -> socks[u -> sz] = *sock;
-			u -> sz ++;			
-		}
+		printf("%d", *sock);
+		u -> socks[u -> sz] = *sock;
+		u -> sz ++;					
+		return 1;
 	}
 }
 
@@ -66,12 +43,15 @@ void *renvoi_message(void *arg){
 	char message[490];
     int longueur;
     int * sock = arg;
-    addUser(&user, sock);
+    if (addUser(&user, sock) == 0) {
+    	printf("echec ajout");
+    } else {
+    	
+    	
+    }
     time_t seconds;
     struct tm instant;
-    
-   
-	
+
 	//boucle de communication != boucle d'acceptation de connexion
     while(1){
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
@@ -83,7 +63,11 @@ void *renvoi_message(void *arg){
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
 		printf("%s \n", message);
-		write(*sock,message,strlen(message)+1);
+		int i = 0;
+		for (i = 0; i < user.sz; i++) {
+			write(user.socks[i],message,strlen(message)+1);
+		}
+		//write(*sock,message,strlen(message)+1);
     }
 	pthread_exit(NULL);
 }
