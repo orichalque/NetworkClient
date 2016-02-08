@@ -52,7 +52,7 @@ void *renvoi_message(void *arg){
     time_t seconds;
     struct tm instant;
 
-    //boucle de communication avec un client
+	//boucle de communication != boucle d'acceptation de connexion
     while(1){
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
 			pthread_exit(NULL);

@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     signal(SIGINT,stop);
 
     while (1){
-	   	scanf("%s", mesg);
+		fgets(mesg, 489, stdin); //pas plus de 489 car + car fin chaine
 		pthread_t t1;
 		if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
 				perror("Impossible de creer le thread d'envoi de message");
