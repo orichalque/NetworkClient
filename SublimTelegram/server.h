@@ -15,6 +15,7 @@
 #include <netdb.h> 		/* pour hostent, servent */
 #include <string.h> 		/* pour bcopy, ... */  
 #include <pthread.h> //threads
+#include <signal.h>
 #include <unistd.h>
 #include <time.h> 
 #define TAILLE_MAX_NOM 256
@@ -29,6 +30,7 @@ typedef struct{
 	int socks[];
 } users;
 
+void stop();
 int addUser(users *u, int* sock);
 void *thread_1(void *arg);
 void *renvoi_message(void *arg);

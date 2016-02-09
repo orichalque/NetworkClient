@@ -37,7 +37,6 @@ void *envoi_message(void* arg){
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
 		exit(1);
     }
-    printf("message envoye au serveur. \n");
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
 		write(1,buffer,longueur);

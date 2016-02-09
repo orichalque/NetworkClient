@@ -73,6 +73,14 @@ void *renvoi_message(void *arg){
 }
 
 /*------------------------------------------------------*/
+void stop() {
+	int i = 0;
+	for (i = 0; i < user.sz; ++i){
+		close(user.socks[i]);
+	}
+	printf("Fermeture du serveur \n");
+	exit(0);
+}
 
 /*------------------------------------------------------*/
 main(int argc, char **argv) {
@@ -114,14 +122,19 @@ main(int argc, char **argv) {
 		exit(1);
     }
 
+	int enable = 1;
+	if (setsockopt(socket_descriptor, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+		error("setsockopt(SO_REUSEADDR) failed");
+	}
+
     /* association du socket socket_descriptor à la structure d'adresse adresse_locale */
     if ((bind(socket_descriptor, (sockaddr*)(&adresse_locale), sizeof(adresse_locale))) < 0) {
 		perror("erreur : impossible de lier la socket a l'adresse de connexion.");
 		exit(1);
     }
     
-    
-
+    signal(SIGINT,stop);
+	
     /* attente des connexions et traitement des donnees recues */
     for(;;) {
     	/* initialisation de la file d'ecoute */
@@ -142,8 +155,7 @@ main(int argc, char **argv) {
     	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
     		perror("pthread_create");    	
     	}
-		//close(nouv_socket_descriptor);
-
+    	
     }
 }
 
