@@ -13,7 +13,6 @@ void updateUserFile() {
 	{
 		fputs("//adress;lastPseudo;...", fichier);
 		fclose(fichier);
-	}
 }
 
 int addUser(users *u, int* sock) {
