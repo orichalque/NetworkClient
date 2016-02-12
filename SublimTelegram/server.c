@@ -5,19 +5,32 @@ Serveur à lancer avant le client
 
 users user;
 
-void updateUserFile() {
+void updateUserFile(sockaddr_in adresse) {
 	FILE* fichier = NULL;
-
-	fichier = fopen("users.txt", "w");
+	fichier = fopen("users.txt", "r"); // en lecture pour rechercher l'adresse du client
 	if (fichier != NULL)
 	{
-		fputs("//adress;lastPseudo;...", fichier);
+		char line [128];
+		char ip[9];
+		char ipfile[9];
+		while ( fgets ( line, sizeof line, fichier ) != NULL )
+      	{
+      		strncpy(ip, line,8);
+      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr);
+        	printf("%s\n", ip);
+        	
+      	}
 		fclose(fichier);
+		fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
+		if (fichier != NULL)
+		{
+			fprintf(fichier, "%d:%s:%d\n", adresse.sin_addr.s_addr, "thib", 0);
+			fclose(fichier);
+		}
 	}
 }
 
 int addUser(users *u, int* sock) {
-	updateUserFile();
 	if (! u -> sz){
 		u -> sz ++;
 		u -> socks[0] = *sock;
@@ -164,6 +177,7 @@ main(int argc, char **argv) {
 		}
 		
 		pthread_t t1;
+		updateUserFile(adresse_client_courant);
     	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
     		perror("pthread_create");    	
     	}
