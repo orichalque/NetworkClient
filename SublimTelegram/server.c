@@ -34,22 +34,29 @@ void updateUserFile(sockaddr_in adresse) {
 	fichier = fopen("users.txt", "r"); // en lecture pour rechercher l'adresse du client
 	if (fichier != NULL)
 	{
+		int present = 0;
 		char line [128];
 		char ip[9];
 		char ipfile[9];
-		while ( fgets ( line, sizeof line, fichier ) != NULL )
+		while ( (fgets ( line, sizeof line, fichier ) != NULL) || !present )
       	{
-      		strncpy(ip, line,8);
-      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr);
-        	printf("%s\n", ip);
-        	
+      		strncpy(ip, line,8); // on recupere l'adresse du fichier
+      		ip[8] = '\0';
+      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr); // et celle du client
+      		ipfile[8] = '\0';
+      		if (strcmp(ipfile,ip)==0)
+      		{
+      			present = 1; //client deja repertorie
+      		}   	
       	}
 		fclose(fichier);
-		fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
-		if (fichier != NULL)
-		{
-			fprintf(fichier, "%d:%s:%d\n", adresse.sin_addr.s_addr, "thib", 0);
-			fclose(fichier);
+		if (!present){
+			fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
+			if (fichier != NULL)
+			{
+				fprintf(fichier, "%d:%s:%d\n", adresse.sin_addr.s_addr, "thib", 0);
+				fclose(fichier);
+			}
 		}
 	}
 }
