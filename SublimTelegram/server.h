@@ -30,11 +30,17 @@ typedef struct{
 	int socks[];
 } users;
 
+typedef struct{
+	int sz;
+	char words[50][16];
+} dictionnary;
+
 void stop();
 int addUser(users *u, int* sock);
 void *thread_1(void *arg);
 void *renvoi_message(void *arg);
-
+void readWords(dictionnary* d);
+char* analyseMessage(char* message, dictionnary *d);
 
 #ifdef	__cplusplus
 }

@@ -4,6 +4,30 @@ Serveur à lancer avant le client
 #include "server.h"
 
 users user;
+dictionnary dict;
+
+//Used to read the dictionnary and store it in an array
+void readWords(dictionnary* d) {
+	FILE *fp;
+	fp = fopen("dictionnaire","r"); // read mode
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    int MAXLINES = 8; //nb de mots
+    
+	if (fp == NULL){
+		printf("Cannot open the dictionnary file");
+	} 
+	d -> sz = 0;
+	int i = 0;
+    while (i <= MAXLINES && fgets(d -> words[i], sizeof(d -> words[0]), fp))
+    {
+        d -> words[i][strlen(d -> words[i])-1] = '\0';
+        i = i + 1;
+        d -> sz ++;
+    }
+    fclose(fp);
+}
 
 void updateUserFile(sockaddr_in adresse) {
 	FILE* fichier = NULL;
@@ -54,7 +78,21 @@ int addUser(users *u, int* sock) {
 	}
 }
 
-
+char* analyseMessage(char* message, dictionnary *d) {
+	char* messageBis;
+	int i = 0;
+	int j;
+	char* ptr;
+	for (i = 0; i < d -> sz; i++){
+		if((ptr = strstr(message, d -> words[i])) != NULL ){
+			for (j = 0; j < strlen(d -> words[j]); ++j){
+				*ptr = '*';
+				ptr++;
+			}
+		}
+	}
+	return message;
+}
 /*------------------------------------------------------*/
 void *thread_1(void *arg){
 	printf("yolo \n");
@@ -87,7 +125,7 @@ void *renvoi_message(void *arg){
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
-		printf("%s \n", message);
+		analyseMessage(message, &dict);
 		int i = 0;
 		for (i = 0; i < user.sz; i++) {
 			write(user.socks[i],message,strlen(message)+1);
@@ -120,6 +158,8 @@ main(int argc, char **argv) {
     char 		machine[TAILLE_MAX_NOM+1]; 	/* nom de la machine locale */
     
     gethostname(machine,TAILLE_MAX_NOM);		/* recuperation du nom de la machine */
+    readWords(&dict);
+    
     user.sz = 0; //initialisation des users
     
     /* recuperation de la structure d'adresse en utilisant le nom */
