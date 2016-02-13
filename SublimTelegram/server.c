@@ -92,7 +92,7 @@ char* analyseMessage(char* message, dictionnary *d) {
 	char* ptr;
 	for (i = 0; i < d -> sz; i++){
 		if((ptr = strstr(message, d -> words[i])) != NULL ){
-			for (j = 0; j < strlen(d -> words[j]); ++j){
+			for (j = 0; j < strlen(d -> words[i]); ++j){
 				*ptr = '*';
 				ptr++;
 			}
