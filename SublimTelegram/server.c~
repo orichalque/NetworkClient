@@ -40,17 +40,16 @@ int updateUserFile(sockaddr_in adresse) {
 		char ip[9];
 		char ipfile[9];
 		while ( (fgets ( line, sizeof line, fichier ) != NULL) && !present )
-      	{
-		printf("%s\n","test");
-      		strncpy(ip, line,8); // on recupere l'adresse du fichier
-      		ip[8] = '\0';
-      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr); // et celle du client
-      		ipfile[8] = '\0';
-      		if (strcmp(ipfile,ip)==0)
       		{
-      			present = 1; //client deja repertorie
-      		}   	
-      	}
+	      		strncpy(ip, line,8); // on recupere l'adresse du fichier
+	      		ip[8] = '\0';
+	      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr); // et celle du client
+	      		ipfile[8] = '\0';
+	      		if (strcmp(ipfile,ip)==0)
+	      		{
+	      			present = 1; //client deja repertorie
+	      		}   	
+      		}
 		fclose(fichier);
 		if (!present){
 			fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
@@ -67,39 +66,41 @@ int updateUserFile(sockaddr_in adresse) {
 	return -1;
 }
 
-int updateUserFile(sockaddr_in adresse) {
+/* retourne 1 si l'incrementation est effectuée, -1 sinon */
+int incrementInsult(sockaddr_in adresse) {
 	FILE* fichier = NULL;
-	fichier = fopen("users.txt", "r"); // en lecture pour rechercher l'adresse du client
-	if (fichier != NULL)
+	FILE* new = NULL;
+	fichier = fopen("users.txt", "r"); // en lecture
+	new = fopen("new.txt", "w"); // en ecriture
+	if ((fichier != NULL) && (new != NULL))
 	{
+		char * nbinsults;
 		int present = 0;
 		char line [128];
 		char ip[9];
 		char ipfile[9];
-		while ( (fgets ( line, sizeof line, fichier ) != NULL) && !present )
-      	{
-		printf("%s\n","test");
-      		strncpy(ip, line,8); // on recupere l'adresse du fichier
-      		ip[8] = '\0';
-      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr); // et celle du client
-      		ipfile[8] = '\0';
-      		if (strcmp(ipfile,ip)==0)
-      		{
-      			present = 1; //client deja repertorie
-      		}   	
-      	}
+		while (fgets ( line, sizeof line, fichier ) != NULL)
+      		{ // on copie tout le fichier user dans le nouveau en modifiant que la ligne de l'utilisateur voulu
+	      		strncpy(ip, line,8);
+	      		ip[8] = '\0';
+	      		sprintf(ipfile, "%d", adresse.sin_addr.s_addr);
+	      		ipfile[8] = '\0';
+	      		if (strcmp(ipfile,ip)==0)
+	      		{//c'est l'utilisateur vulgaire
+				nbinsults = strtok(line,":");
+				nbinsults = strtok (NULL, ":");
+	      			fprintf(new, "%d:%ld\n", adresse.sin_addr.s_addr, strtol(nbinsults,NULL,10)+1);
+	      		}else
+			{// utilisateur normal
+				fprintf(new, "%s", line);
+			}   	
+      		}
 		fclose(fichier);
-		if (!present){
-			fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
-			if (fichier != NULL)
-			{
-				fprintf(fichier, "%d:%d\n", adresse.sin_addr.s_addr, 1);
-				fclose(fichier);
-				return 1;
-			}
-		}else{
-			return 0;
-		}
+		fclose(new);
+		remove("users.txt"); // on remplace l'ancien fichier par le nouveau
+		rename("new.txt", "users.txt");
+		return 1;
+		
 	}
 	return -1;	
 }
@@ -171,7 +172,7 @@ void *renvoi_message(void *arg){
 			pthread_exit(NULL);
 		}
 		time(&seconds);
-    	instant = *localtime(&seconds);
+    		instant = *localtime(&seconds);
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
@@ -268,6 +269,8 @@ main(int argc, char **argv) {
 		
 		pthread_t t1;
 		updateUserFile(adresse_client_courant);
+		incrementInsult(adresse_client_courant);
+		
     	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
     		perror("pthread_create");    	
     	}
