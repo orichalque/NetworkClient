@@ -104,7 +104,7 @@ int updateUserFile(sockaddr_in adresse) {
 	return -1;	
 }
 
-/*int addUser(users *u, int* sock) {
+int addUser(users *u, int* sock) {
 	if (! u -> sz){
 		u -> sz ++;
 		u -> socks[0] = *sock;
@@ -126,7 +126,7 @@ int updateUserFile(sockaddr_in adresse) {
 		u -> sz ++;					
 		return 1;
 	}
-}*/
+}
 
 char* analyseMessage(char* message, dictionnary *d) {
 	char* messageBis;

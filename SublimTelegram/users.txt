@@ -1,2 +1,3 @@
-//adress:lastPseudo:insults
-16777343:thib:0
+//address:nbInsults
+
+16777343:0
