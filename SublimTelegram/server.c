@@ -4,6 +4,7 @@ Serveur à lancer avant le client
 #include "server.h"
 
 users user;
+rooms room;
 dictionnary dict;
 
 //Used to read the dictionnary and store it in an array
@@ -111,10 +112,12 @@ int addUser(users *u, int* sock) {
 		u -> socks[0] = *sock;
 		return 1;
 	} else {
-		//verification de la presence d'une sock avant son ajout
 		if (u -> sz >= 10){
+			//Salle pleine
 			return 0;
 		}		
+		
+		//verification de la presence d'une sock avant son ajout
 		int i;
 		for (i = 0; i < u -> sz; ++i){
 			if (&u -> socks[i] == sock){
@@ -126,6 +129,44 @@ int addUser(users *u, int* sock) {
 		u -> socks[u -> sz] = *sock;
 		u -> sz ++;					
 		return 1;
+	}
+}
+
+/*
+ *@brief Ajout d'utilisateur dans une room. Si la room existe pas on la crée
+ *
+ */
+int addUserInRoom(rooms *room, int* sock, char* roomName){
+	int cpt;
+	int added = 0;
+	if (!room->sz){
+		//aucune salle existe on la crée:
+		room->room[0].name = roomName;
+		room->sz ++;	
+		//On ajoute l'utilisateur
+		addUser(&room->room[room->sz-1], sock);
+		printf("Salle crée, première room & user ajouté");
+	}
+	
+	for (cpt = 0; cpt < room -> sz; cpt++){
+		if (strcmp(room->room[cpt].name, roomName) == 0){
+			//La salle existe déjà
+			//On ajoute l'utilisateur dedans			
+			added = 1;
+			addUser(&room->room[cpt], sock);
+			printf("user ajouté dans une salle déjà crée");
+						
+		}
+	}
+	
+	if (!added){
+		//La salle n'existe pas, on la crée:
+		//TODO: Vérifier nombre de salle maximum		
+		room->room[room->sz].name = roomName;
+		room->sz ++;	
+		//On ajoute l'utilisateur
+		addUser(&room->room[room->sz-1], sock);
+		printf("Salle crée et user ajouté");
 	}
 }
 
@@ -157,12 +198,13 @@ void *renvoi_message(void *arg){
     char message[490];
     int longueur;
     int * sock = arg;
-    if (addUser(&user, sock) == 0) {
-    	printf("echec ajout");
-    } else {
-    	
-    	
-    }
+    addUserInRoom(&room, sock, "room1");
+    
+//    if (addUser(&user, sock) == 0) {
+//	      printf("echec ajout");
+//    } else {
+    		
+//    }
     time_t seconds;
     struct tm instant;
 
@@ -179,6 +221,7 @@ void *renvoi_message(void *arg){
 		analyseMessage(message, &dict);
 		int i = 0;
 		for (i = 0; i < user.sz; i++) {
+			//TODO ECRIRE DANS LA ROOM CORRESPONDANTE A TOUS LES UTILISATEURS
 			write(user.socks[i],message,strlen(message)+1);
 		}
 		//write(*sock,message,strlen(message)+1);

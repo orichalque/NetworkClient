@@ -25,11 +25,20 @@ typedef struct sockaddr_in sockaddr_in;
 typedef struct hostent hostent;
 typedef struct servent servent;
 
+//Room struct containing users and a name
 typedef struct{
+	char* name;
 	int sz;
 	int socks[];
 } users;
 
+//struct containing rooms of users
+typedef struct{
+	int sz;
+	users room[];
+} rooms;
+
+//Dictionnary of 50 words of size 16chars
 typedef struct{
 	int sz;
 	char words[50][16];
