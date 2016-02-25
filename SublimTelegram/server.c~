@@ -54,14 +54,12 @@ int updateUserFile(sockaddr_in adresse) {
       		}
 		fclose(fichier);
 		if (!present){
-			//protection du fichier user.txt qui peut etre modifié en concurrence
 			pthread_mutex_lock(&mutexUserFile);
 			fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
 			if (fichier != NULL)
 			{
 				fprintf(fichier, "%d:%d\n", adresse.sin_addr.s_addr, 0);
 				fclose(fichier);
-				//on relache la protection sur le fichier
 				pthread_mutex_unlock(&mutexUserFile);
 				return 1;
 			}
@@ -110,7 +108,6 @@ int incrementInsult(sockaddr_in adresse) {
 		return 1;
 		
 	}
-	//on relache la protection sur le fichier
 	pthread_mutex_unlock(&mutexUserFile);
 	return -1;	
 }
