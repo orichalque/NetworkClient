@@ -12,23 +12,22 @@ pthread_mutex_t mutexUserFile;
 void readWords(dictionnary* d) {
 	FILE *fp;
 	fp = fopen("dictionnaire","r"); // read mode
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    int MAXLINES = 8; //nb de mots
-    
+	char * line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	int MAXLINES = 8; //nb de mots
 	if (fp == NULL){
 		printf("Cannot open the dictionnary file");
 	} 
 	d -> sz = 0;
 	int i = 0;
-    while (i <= MAXLINES && fgets(d -> words[i], sizeof(d -> words[0]), fp))
-    {
-        d -> words[i][strlen(d -> words[i])-1] = '\0';
-        i = i + 1;
-        d -> sz ++;
-    }
-    fclose(fp);
+	while (i <= MAXLINES && fgets(d -> words[i], sizeof(d -> words[0]), fp))
+	{
+		d -> words[i][strlen(d -> words[i])-1] = '\0';
+		i = i + 1;
+		d -> sz ++;
+	}
+	fclose(fp);
 }
 
 /* retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si erreur */
@@ -54,15 +53,18 @@ int updateUserFile(sockaddr_in adresse) {
       		}
 		fclose(fichier);
 		if (!present){
+			//protection du fichier user.txt qui peut etre modifié en concurrence
 			pthread_mutex_lock(&mutexUserFile);
 			fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
 			if (fichier != NULL)
 			{
 				fprintf(fichier, "%d:%d\n", adresse.sin_addr.s_addr, 0);
 				fclose(fichier);
+				//on relache la protection sur le fichier
 				pthread_mutex_unlock(&mutexUserFile);
 				return 1;
 			}
+			pthread_mutex_unlock(&mutexUserFile);
 		}else{
 			return 0;
 		}
@@ -71,6 +73,8 @@ int updateUserFile(sockaddr_in adresse) {
 }
 
 /* retourne 1 si l'incrementation est effectuée, -1 sinon */
+//TODO on a besoin de l'adresse ! mais on a que le socket_descriptor !
+//     ? structure socket -> adresse ??????????
 int incrementInsult(sockaddr_in adresse) {
 	FILE* fichier = NULL;
 	FILE* new = NULL;
@@ -105,9 +109,10 @@ int incrementInsult(sockaddr_in adresse) {
 		fclose(new);
 		remove("users.txt"); // on remplace l'ancien fichier par le nouveau
 		rename("new.txt", "users.txt");
-		return 1;
-		
+		pthread_mutex_unlock(&mutexUserFile);
+		return 1;	
 	}
+	//on relache la protection sur le fichier
 	pthread_mutex_unlock(&mutexUserFile);
 	return -1;	
 }
