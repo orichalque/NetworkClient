@@ -218,7 +218,10 @@ void *renvoi_message(void *arg){
     char message[490];
     int longueur;
     int * sock = arg;
-    addUserInRoom(&room, sock, "room1");
+	if( !addUserInRoom(&room, sock, "room1") ) {		
+		write(*sock, "0", 1);
+		//TODO
+	}	
     
 //    if (addUser(&user, sock) == 0) {
 //	      printf("echec ajout");

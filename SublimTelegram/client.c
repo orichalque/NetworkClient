@@ -24,15 +24,23 @@ servent *ptr_service;
 int socket_descriptor;
 char *host;
 char *pseudo;
+char *room; //limite 16 char
 char pseudoWithComa[14];
+char pseudiWithComaAndRoom[30];
+//pseudo:room
 
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
     char mesg[512];
     int longueur;
-    strcpy(mesg, pseudoWithComa);
+    strcpy(mesg, pseudoWithComa);    
     strcat(mesg, arg);
+    if (strcmp(arg, "0") == 0){
+    	//message de deconnexion venant du server (Impossible de rejoindre un salon)
+    	exit(1);    
+    }
+    
     // envoi du message vers le serveur
     if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
@@ -66,8 +74,11 @@ void stop(){
 int main(int argc, char **argv) {	
     char mesg[512];
     if (argc != 3) { // verification du nombre d'argument
-		perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme>");
+		perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> ");
 		exit(1);
+    }
+    if (argc == 4) {
+    	salon = arg[3];
     }
 
     host = argv[1];
