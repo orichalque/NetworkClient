@@ -55,6 +55,7 @@ int updateUserFile(sockaddr_in adresse) {
 		if (!present){
 			//protection du fichier user.txt qui peut etre modifié en concurrence
 			pthread_mutex_lock(&mutexUserFile);
+			
 			fichier = fopen("users.txt", "a");// en ecriture pour l'ajouter
 			if (fichier != NULL)
 			{
@@ -155,8 +156,9 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 		room->room[0].name = roomName;
 		room->sz ++;	
 		//On ajoute l'utilisateur
-		addUser(&room->room[room->sz-1], sock);
-		printf("Salle crée, première room & user ajouté");
+		char* message = "Vous avez crée une salle.\n";
+		write(*sock, message, strlen(message)+1);
+		return addUser(&room->room[room->sz-1], sock);
 	}
 	
 	for (cpt = 0; cpt < room -> sz; cpt++){
@@ -164,8 +166,9 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 			//La salle existe déjà
 			//On ajoute l'utilisateur dedans			
 			added = 1;
-			addUser(&room->room[cpt], sock);
-			printf("user ajouté dans une salle déjà crée");
+			char* message = "Vous avez rejoint une salle.\n";
+			write(*sock, message, strlen(message)+1);	
+			return addUser(&room->room[cpt], sock);
 						
 		}
 	}
@@ -173,11 +176,17 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 	if (!added){
 		//La salle n'existe pas, on la crée:
 		//TODO: Vérifier nombre de salle maximum		
+		if (room->sz >= 10){
+			char* message = "Le serveur est complet. Rejoignez une salle déjà existante.\n";
+			write(*sock, message, strlen(message)+1);
+			return 0;
+			
+		}
 		room->room[room->sz].name = roomName;
 		room->sz ++;	
 		//On ajoute l'utilisateur
-		addUser(&room->room[room->sz-1], sock);
-		printf("Salle crée et user ajouté");
+		printf("Salle crée et user ajouté\n");
+		return addUser(&room->room[room->sz-1], sock);
 	}
 }
 
@@ -231,11 +240,13 @@ void *renvoi_message(void *arg){
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
 		analyseMessage(message, &dict);
 		int i = 0;
-		for (i = 0; i < user.sz; i++) {
-			//TODO ECRIRE DANS LA ROOM CORRESPONDANTE A TOUS LES UTILISATEURS
-			write(user.socks[i],message,strlen(message)+1);
+		
+		//ecriture dans la room
+		for (i = 0; i < room.room[0].sz; ++i) {
+			printf("%s", message);
+			write(room.room[0].socks[i], message, strlen(message)+1);
 		}
-		//write(*sock,message,strlen(message)+1);
+		
     }
 	pthread_exit(NULL);
 }

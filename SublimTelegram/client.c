@@ -1,6 +1,7 @@
 /*-----------------------------------------------------------
 Client a lancer apres le serveur avec la commande :
 client <adresse-serveur> <pseudonyme>
+//TODO Modifier la trame pour indiquer la room ou l'on se connecte
 ------------------------------------------------------------*/
 #include <stdlib.h>
 #include <stdio.h>
