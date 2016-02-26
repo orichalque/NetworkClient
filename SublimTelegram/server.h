@@ -49,7 +49,7 @@ int addUser(users *u, int* sock);
 void *thread_1(void *arg);
 void *renvoi_message(void *arg);
 void readWords(dictionnary* d);
-char* analyseMessage(char* message, dictionnary *d);
+char* analyseMessage(char* message, dictionnary *d, int* sock);
 
 #ifdef	__cplusplus
 }

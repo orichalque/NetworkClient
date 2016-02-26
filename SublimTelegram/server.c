@@ -7,6 +7,7 @@ users user;
 rooms room;
 dictionnary dict;
 pthread_mutex_t mutexUserFile;
+sockaddr_in ips[50];
 
 //Used to read the dictionnary and store it in an array
 void readWords(dictionnary* d) {
@@ -190,13 +191,14 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 	}
 }
 
-char* analyseMessage(char* message, dictionnary *d) {
+char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	char* messageBis;
 	int i = 0;
 	int j;
 	char* ptr;
 	for (i = 0; i < d -> sz; i++){
 		if((ptr = strstr(message, d -> words[i])) != NULL ){
+			incrementInsult(ips[*sock]);
 			for (j = 0; j < strlen(d -> words[i]); ++j){
 				*ptr = '*';
 				ptr++;
@@ -241,7 +243,7 @@ void *renvoi_message(void *arg){
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
-		analyseMessage(message, &dict);
+		analyseMessage(message, &dict, sock);
 		int i = 0;
 		
 		//ecriture dans la room
@@ -336,7 +338,9 @@ main(int argc, char **argv) {
 		}
 		
 		pthread_t t1;
-		updateUserFile(adresse_client_courant);		
+		updateUserFile(adresse_client_courant);
+		//association socket -> ip
+		ips[nouv_socket_descriptor] = adresse_client_courant;
     	if (pthread_create(&t1, NULL, renvoi_message, &nouv_socket_descriptor) == -1){
     		perror("pthread_create");    	
     	}
