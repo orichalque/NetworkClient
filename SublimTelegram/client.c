@@ -24,19 +24,22 @@ servent *ptr_service;
 int socket_descriptor;
 char *host;
 char *pseudo;
-char *room; //limite 16 char
+char *salon; //limite 16 char
 char pseudoWithComa[14];
 char pseudoWithComaAndRoom[26];
-//room:pseudo
 
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
     char mesg[512];
     int longueur;
-    strcpy(mesg, pseudoWithComaAndRoom);    
-    strcat(mesg, arg);
-    
+    if (strcmp(arg, "@close")==0){
+    	strcpy(mesg, salon);
+    	strcat(mesg, "1");
+    }else{
+		strcpy(mesg, pseudoWithComaAndRoom);    
+		strcat(mesg, arg);
+    }
     if (strcmp(arg, "0") == 0){
     	//message de deconnexion venant du server (Impossible de rejoindre un salon)
     	exit(1);    
@@ -74,7 +77,6 @@ void stop(){
 
 int main(int argc, char **argv) {	
     char mesg[512];
-    char *salon;
     if (argc < 3) { // verification du nombre d'argument
 		perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> ");
 		exit(1);
@@ -83,7 +85,7 @@ int main(int argc, char **argv) {
     if (argc == 4) {
     	if (strlen(argv[3]) > 14) {
     		memcpy( salon, &argv[3][0], 14 );
-    		printf("salon tronqué: %s", salon);
+    		//printf("salon tronqué: %s", salon);
     	} else {
     		salon = argv[3];
     		while (strlen(salon) < 14){
@@ -139,6 +141,7 @@ int main(int argc, char **argv) {
 
     while (1){
 		fgets(mesg, 489, stdin); //pas plus de 489 car + car fin chaine
+		
 		pthread_t t1;
 		if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
 				perror("Impossible de creer le thread d'envoi de message");
