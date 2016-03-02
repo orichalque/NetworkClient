@@ -220,6 +220,8 @@ void *renvoi_message(void *arg){
     char message[490];
     int longueur;
     int * sock = arg;
+    // Récupérer les 12 premiers caractères de la trame --> room
+    
 	if( !addUserInRoom(&room, sock, "room1") ) {		
 		write(*sock, "0", 1);
 		//TODO

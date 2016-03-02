@@ -26,7 +26,7 @@ char *host;
 char *pseudo;
 char *room; //limite 16 char
 char pseudoWithComa[14];
-char pseudiWithComaAndRoom[30];
+char pseudoWithComaAndRoom[26];
 //pseudo:room
 
 //code thread envoi message
