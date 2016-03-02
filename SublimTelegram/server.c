@@ -9,6 +9,7 @@ dictionnary dict;
 pthread_mutex_t mutexUserFile;
 sockaddr_in ips[50];
 
+//TODO fonction envoi message à room
 //Used to read the dictionnary and store it in an array
 void readWords(dictionnary* d) {
 	FILE *fp;
@@ -75,8 +76,6 @@ int updateUserFile(sockaddr_in adresse) {
 }
 
 /* retourne 1 si l'incrementation est effectuée, -1 sinon */
-//TODO on a besoin de l'adresse ! mais on a que le socket_descriptor !
-//     ? structure socket -> adresse ??????????
 int incrementInsult(sockaddr_in adresse) {
 	FILE* fichier = NULL;
 	FILE* new = NULL;
@@ -176,7 +175,7 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 	
 	if (!added){
 		//La salle n'existe pas, on la crée:
-		//TODO: Vérifier nombre de salle maximum		
+		//TODO: Vérifier nombre de salle maximum	
 		if (room->sz >= 10){
 			char* message = "Le serveur est complet. Rejoignez une salle déjà existante.\n";
 			write(*sock, message, strlen(message)+1);
@@ -218,20 +217,13 @@ void *renvoi_message(void *arg){
     char date[11];
     char buffer[256];
     char message[490];
+    char roomname[14];
     int longueur;
     int * sock = arg;
     // Récupérer les 12 premiers caractères de la trame --> room
     
-	if( !addUserInRoom(&room, sock, "room1") ) {		
-		write(*sock, "0", 1);
-		//TODO
-	}	
-    
-//    if (addUser(&user, sock) == 0) {
-//	      printf("echec ajout");
-//    } else {
-    		
-//    }
+	
+
     time_t seconds;
     struct tm instant;
 
@@ -240,14 +232,17 @@ void *renvoi_message(void *arg){
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
 			pthread_exit(NULL);
 		}
+		memcpy(roomname, &buffer[0], 14);
 		time(&seconds);
-    		instant = *localtime(&seconds);
+    	instant = *localtime(&seconds);
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 		buffer[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer);
 		analyseMessage(message, &dict, sock);
 		int i = 0;
-		
+		if( !addUserInRoom(&room, sock, roomname) ) {		
+			write(*sock, "0", 1);
+		}
 		//ecriture dans la room
 		for (i = 0; i < room.room[0].sz; ++i) {
 			printf("%s", message);
