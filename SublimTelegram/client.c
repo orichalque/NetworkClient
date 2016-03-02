@@ -27,15 +27,16 @@ char *pseudo;
 char *room; //limite 16 char
 char pseudoWithComa[14];
 char pseudoWithComaAndRoom[26];
-//pseudo:room
+//room:pseudo
 
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
     char mesg[512];
     int longueur;
-    strcpy(mesg, pseudoWithComa);    
+    strcpy(mesg, pseudoWithComaAndRoom);    
     strcat(mesg, arg);
+    
     if (strcmp(arg, "0") == 0){
     	//message de deconnexion venant du server (Impossible de rejoindre un salon)
     	exit(1);    
@@ -73,12 +74,27 @@ void stop(){
 
 int main(int argc, char **argv) {	
     char mesg[512];
-    if (argc != 3) { // verification du nombre d'argument
+    char *salon;
+    if (argc < 3) { // verification du nombre d'argument
 		perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> ");
 		exit(1);
     }
+    
     if (argc == 4) {
-    	salon = arg[3];
+    	if (strlen(argv[3]) > 14) {
+    		memcpy( salon, &argv[3][0], 14 );
+    		printf("salon tronqué: %s", salon);
+    	} else {
+    		salon = argv[3];
+    		while (strlen(salon) < 14){
+    			strcat(salon, " ");
+    		}
+    	}
+    } else {
+    	salon = "room commune  ";
+    	int sizeSalon = strlen(salon);
+    	printf("taille du salon: %d", sizeSalon);
+    	
     }
 
     host = argv[1];
@@ -88,6 +104,10 @@ int main(int argc, char **argv) {
     printf("sous le pseudo   : %s \n", pseudo);
     strcpy(pseudoWithComa, pseudo);
     strcat(pseudoWithComa, ": ");
+    strcat(salon, pseudoWithComa);
+    strcpy(pseudoWithComaAndRoom, salon);
+    
+    
     
     if ((ptr_host = gethostbyname(host)) == NULL) {
 		perror("erreur : impossible de trouver le serveur a partir de son adresse.");
