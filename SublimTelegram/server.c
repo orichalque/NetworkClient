@@ -9,19 +9,17 @@ dictionnary dict;
 pthread_mutex_t mutexUserFile;
 sockaddr_in ips[50];
 
-//TODO fonction envoi message à room
-
 /* 1 -> envoi reussi */
 int sendMessageToRoom(char* roomName, char* msg) {
 	int curr;
-	int i = user.sz;
-	printf("room: %s", roomName);
+	
+	int i = room.sz;
 	for (curr = 0; curr < i; ++curr){
-		if (!strcmp(room.room[curr].name, roomName)){
+		if (strcmp(room.room[curr].name, roomName) == 0){
 			//bonne room
 			int curr2;
 			for (curr2 =0; curr2 < room.room[curr].sz; ++curr){
-				write(room.room[0].socks[i], msg, strlen(msg)+1);
+				write(room.room[curr].socks[curr2], msg, strlen(msg)+1);
 			}
 			return 1;
 		}
@@ -139,7 +137,8 @@ int incrementInsult(sockaddr_in adresse) {
 
 int addUser(users *u, int* sock) {
 	if (! u -> sz){
-		u -> sz ++;
+		//salle existante mais vide
+		u -> sz = 1;
 		u -> socks[0] = *sock;
 		return 1;
 	} else {
@@ -151,14 +150,18 @@ int addUser(users *u, int* sock) {
 		//verification de la presence d'une sock avant son ajout
 		int i;
 		for (i = 0; i < u -> sz; ++i){
-			if (&u -> socks[i] == sock){
+			if (u -> socks[i] == *sock){
 				//sock deja present
-				return 0;
+				char* message = "Vous etes déjà dans la salle.\n";
+				write(*sock, message, strlen(message)+1);	
+				return 1;
 			} 
 		}		
 		printf("%d", *sock);
 		u -> socks[u -> sz] = *sock;
 		u -> sz ++;					
+		char* message = "Vous avez rejoint une salle.\n";
+		write(*sock, message, strlen(message)+1);	
 		return 1;
 	}
 }
@@ -170,10 +173,11 @@ int addUser(users *u, int* sock) {
 int addUserInRoom(rooms *room, int* sock, char* roomName){
 	int cpt;
 	int added = 0;
+	printf("le socket du message est: %d \n", *sock);
 	if (!room->sz){
 		//aucune salle existe on la crée:
 		room->room[0].name = roomName;
-		room->sz ++;	
+		room->sz = 1;	
 		//On ajoute l'utilisateur
 		char* message = "Vous avez crée une salle.\n";
 		write(*sock, message, strlen(message)+1);
@@ -184,9 +188,9 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 		if (strcmp(room->room[cpt].name, roomName) == 0){
 			//La salle existe déjà
 			//On ajoute l'utilisateur dedans			
-			added = 1;
-			char* message = "Vous avez rejoint une salle.\n";
-			write(*sock, message, strlen(message)+1);	
+			added = 1;			
+			char* message = "La salle existe deja on ajoute luser.\n";
+			write(*sock, message, strlen(message)+1);
 			return addUser(&room->room[cpt], sock);
 						
 		}
@@ -194,7 +198,6 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 	
 	if (!added){
 		//La salle n'existe pas, on la crée:
-		//TODO: Vérifier nombre de salle maximum	
 		if (room->sz >= 10){
 			char* message = "Le serveur est complet. Rejoignez une salle déjà existante.\n";
 			write(*sock, message, strlen(message)+1);
@@ -204,7 +207,6 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 		room->room[room->sz].name = roomName;
 		room->sz ++;	
 		//On ajoute l'utilisateur
-		printf("Salle crée et user ajouté\n");
 		return addUser(&room->room[room->sz-1], sock);
 	}
 }
@@ -217,6 +219,7 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	for (i = 0; i < d -> sz; i++){
 		if((ptr = strstr(message, d -> words[i])) != NULL ){
 			incrementInsult(ips[*sock]);
+			
 			for (j = 0; j < strlen(d -> words[i]); ++j){
 				*ptr = '*';
 				ptr++;
@@ -226,11 +229,6 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	return message;
 }
 /*------------------------------------------------------*/
-void *thread_1(void *arg){
-	printf("yolo \n");
-	(void) arg;
-	pthread_exit(NULL);
-}
 
 void *renvoi_message(void *arg){
     char date[11];
@@ -251,7 +249,9 @@ void *renvoi_message(void *arg){
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
 			pthread_exit(NULL);
 		}
+		//recuperation du nom de la room
 		memcpy(roomname, &buffer[0], 14);
+		
 		time(&seconds);
     	instant = *localtime(&seconds);
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
@@ -260,11 +260,10 @@ void *renvoi_message(void *arg){
 		analyseMessage(message, &dict, sock);
 		int i = 0;
 		if( !addUserInRoom(&room, sock, roomname) ) {		
-			write(*sock, "0", 1);
+			write(*sock, "0\n", 1);
 		}
 		
 		//ecriture dans la room
-		printf("J'envoie le message dans la room %s\n", roomname);
 		sendMessageToRoom(roomname, message);		
     }
 	pthread_exit(NULL);

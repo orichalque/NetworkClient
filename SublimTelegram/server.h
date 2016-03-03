@@ -29,13 +29,13 @@ typedef struct servent servent;
 typedef struct{
 	char* name;
 	int sz;
-	int socks[];
+	int socks[10];
 } users;
 
 //struct containing rooms of users
 typedef struct{
 	int sz;
-	users room[];
+	users room[10];
 } rooms;
 
 //Dictionnary of 50 words of size 16chars
