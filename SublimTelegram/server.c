@@ -233,7 +233,7 @@ void *renvoi_message(void *arg){
     int longueur;
     int * sock = arg;
     // Récupérer les 12 premiers caractères de la trame --> room
-    
+	
 	
 
     time_t seconds;
@@ -241,13 +241,13 @@ void *renvoi_message(void *arg){
 
     //boucle de communication avec un client
     while(1){
+    	char buffer2[242];
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
 			pthread_exit(NULL);
 		}
 		//recuperation du nom de la room
 		memcpy(roomname, &buffer[0], 14);
-		char buffer2[242];
-		memcpy(buffer2, &buffer[14], 242);
+		memcpy(buffer2, &buffer[14], strlen(buffer)-14);
 		
 		time(&seconds);
     	instant = *localtime(&seconds);
@@ -261,7 +261,8 @@ void *renvoi_message(void *arg){
 		}
 		
 		//ecriture dans la room
-		sendMessageToRoom(roomname, message);		
+		sendMessageToRoom(roomname, message);
+		
     }
 	pthread_exit(NULL);
 }
