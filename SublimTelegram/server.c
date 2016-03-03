@@ -226,11 +226,6 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 /*------------------------------------------------------*/
 
 void *renvoi_message(void *arg){
-    char date[11];
-    char buffer[256];
-    char message[490];
-    char roomname[14];
-    int longueur;
     int * sock = arg;
     // Récupérer les 12 premiers caractères de la trame --> room
 	
@@ -241,28 +236,32 @@ void *renvoi_message(void *arg){
 
     //boucle de communication avec un client
     while(1){
+    	char date[11];
+    	char message[490];
+    	char roomname[14];
+    	int longueur;
     	char buffer2[242];
+    	char buffer[256];
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
-			pthread_exit(NULL);
+			continue;
 		}
 		//recuperation du nom de la room
-		memcpy(roomname, &buffer[0], 14);
-		memcpy(buffer2, &buffer[14], strlen(buffer)-14);
-		
+		printf("---%s\n",buffer);
+		memcpy(roomname, buffer, 14);
+		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
 		time(&seconds);
     	instant = *localtime(&seconds);
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
-		buffer[longueur] ='\0';
+		buffer2[longueur] ='\0';
 		snprintf(message, sizeof message, "%s %s \n", date, buffer2);
 		analyseMessage(message, &dict, sock);
 		int i = 0;
-		if( !addUserInRoom(&room, sock, roomname) ) {		
+		if( !addUserInRoom(&room, sock, roomname) ) {
 			write(*sock, "0\n", 1);
 		}
-		
 		//ecriture dans la room
 		sendMessageToRoom(roomname, message);
-		
+		memset(buffer,' ',strlen(buffer));
     }
 	pthread_exit(NULL);
 }

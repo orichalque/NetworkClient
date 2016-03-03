@@ -1,7 +1,6 @@
 /*-----------------------------------------------------------
 Client a lancer apres le serveur avec la commande :
 client <adresse-serveur> <pseudonyme>
-//TODO Modifier la trame pour indiquer la room ou l'on se connecte
 ------------------------------------------------------------*/
 #include <stdlib.h>
 #include <stdio.h>
@@ -44,7 +43,7 @@ void *envoi_message(void* arg){
     	//message de deconnexion venant du server (Impossible de rejoindre un salon)
     	exit(1);    
     }
-    
+    mesg[strlen(mesg)-1]='\0';
     // envoi du message vers le serveur
     if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
@@ -53,7 +52,7 @@ void *envoi_message(void* arg){
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
 		write(1,buffer,longueur);
-    }
+    } 
     pthread_exit(NULL);
 }
 
