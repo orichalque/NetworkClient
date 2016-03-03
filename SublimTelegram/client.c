@@ -110,7 +110,6 @@ int main(int argc, char **argv) {
     strcpy(pseudoWithComaAndRoom, salon);
     
     
-    
     if ((ptr_host = gethostbyname(host)) == NULL) {
 		perror("erreur : impossible de trouver le serveur a partir de son adresse.");
 		exit(1);

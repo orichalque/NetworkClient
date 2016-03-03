@@ -152,8 +152,6 @@ int addUser(users *u, int* sock) {
 		for (i = 0; i < u -> sz; ++i){
 			if (u -> socks[i] == *sock){
 				//sock deja present
-				char* message = "Vous etes déjà dans la salle.\n";
-				write(*sock, message, strlen(message)+1);	
 				return 1;
 			} 
 		}		
@@ -173,7 +171,6 @@ int addUser(users *u, int* sock) {
 int addUserInRoom(rooms *room, int* sock, char* roomName){
 	int cpt;
 	int added = 0;
-	printf("le socket du message est: %d \n", *sock);
 	if (!room->sz){
 		//aucune salle existe on la crée:
 		room->room[0].name = roomName;
@@ -189,8 +186,6 @@ int addUserInRoom(rooms *room, int* sock, char* roomName){
 			//La salle existe déjà
 			//On ajoute l'utilisateur dedans			
 			added = 1;			
-			char* message = "La salle existe deja on ajoute luser.\n";
-			write(*sock, message, strlen(message)+1);
 			return addUser(&room->room[cpt], sock);
 						
 		}
@@ -251,12 +246,14 @@ void *renvoi_message(void *arg){
 		}
 		//recuperation du nom de la room
 		memcpy(roomname, &buffer[0], 14);
+		char buffer2[242];
+		memcpy(buffer2, &buffer[14], 242);
 		
 		time(&seconds);
     	instant = *localtime(&seconds);
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
 		buffer[longueur] ='\0';
-		snprintf(message, sizeof message, "%s %s \n", date, buffer);
+		snprintf(message, sizeof message, "%s %s \n", date, buffer2);
 		analyseMessage(message, &dict, sock);
 		int i = 0;
 		if( !addUserInRoom(&room, sock, roomname) ) {		
