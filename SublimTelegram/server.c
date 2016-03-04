@@ -249,6 +249,7 @@ void *renvoi_message(void *arg){
 		printf("---%s\n",buffer);
 		memcpy(roomname, buffer, 14);
 		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
+		
 		time(&seconds);
     	instant = *localtime(&seconds);
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
@@ -257,7 +258,7 @@ void *renvoi_message(void *arg){
 		analyseMessage(message, &dict, sock);
 		int i = 0;
 		if( !addUserInRoom(&room, sock, roomname) ) {
-			write(*sock, "0\n", 1);
+			write(*sock, "0", 1);
 		}
 		//ecriture dans la room
 		sendMessageToRoom(roomname, message);

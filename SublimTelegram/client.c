@@ -32,17 +32,10 @@ void *envoi_message(void* arg){
     char buffer[256];
     char mesg[512];
     int longueur;
-    if (strcmp(arg, "@close")==0){
-    	strcpy(mesg, salon);
-    	strcat(mesg, "1");
-    }else{
-		strcpy(mesg, pseudoWithComaAndRoom);    
-		strcat(mesg, arg);
-    }
-    if (strcmp(arg, "0") == 0){
-    	//message de deconnexion venant du server (Impossible de rejoindre un salon)
-    	exit(1);    
-    }
+
+	strcpy(mesg, pseudoWithComaAndRoom);    
+	strcat(mesg, arg);
+
     mesg[strlen(mesg)-1]='\0';
     // envoi du message vers le serveur
     if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
@@ -51,6 +44,10 @@ void *envoi_message(void* arg){
     }
     // lecture de la reponse en provenance du serveur
     while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
+    	if (!strcmp(buffer, "0")){
+    		printf("Deconnection");
+    		exit(1);
+    	}
 		write(1,buffer,longueur);
     } 
     pthread_exit(NULL);
