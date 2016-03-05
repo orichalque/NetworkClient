@@ -8,7 +8,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \author{Thibault \bsc{Béziers la Fosse}, Benjamin \bsc{Moreau}}
-\title{Spécifications de Sublim Telegram: Un système de communication}
+\title{Sublim Telegram: Un système de communication}
 \pagestyle{fancy}
 
 
@@ -20,26 +20,43 @@
 
 \section{Introduction}
 Dans le cadre de notre module de Réseaux en Master ALMA, nous avons eu à créer et implémenter une application Client/Serveur utilisant les protocoles TCP/IP, sous UNIX, avec le langage C. 
-Afin de remplir les objectifs du projet, nous avons décidé de développer un système de communication synchrone par terminal. Des fonctionnalités seront ajoutés au cours de l'avancement du projet. 
-Nous détaillerons d'abord les fonctionnalités de notre application, puis quelques détails d'implémentations sur chaque fonction susdite. 
+Afin de remplir les objectifs du projet, nous avons décidé de développer un système de communication synchrone par terminal. Il intègre un analyseur syntaxique pour détecter les insultes, un système de salles de discutions, une gestion des droits, des commandes administrateur et un fichier permettant de pérenniser des informations sur les clients. 
+Nous détaillerons d'abord les fonctionnalités de notre application, puis quelques détails d'implémentations sur chaque fonction. 
 \section{Fonctionnalités}
 Les fonctionnalités présentées ci-dessous sont listées par ordre de priorité.
 \subsection{Connexion Client/Serveur}
-Cette première étape dans la conception de notre application permettra au serveur de gérer des clients se connectant en envoyant des messages de manière simultanés. Lorsqu'un utilisateur envoie un message, le serveur le retransmettra à tous les clients.
+Cette première étape dans la conception de notre application permet au serveur de gérer des clients se connectant en envoyant des messages de manière simultanés. Lorsqu'un utilisateur envoie un message, le serveur le retransmet à tous les clients.
 \subsection{Analyseur syntaxique}
 Une fois la connexion établie, l'envoie d'un message entraînera une analyse syntaxique de chaque mot par le serveur. Le message sera décomposé, et comparé à un dictionnaire, qui pourra à son tour censurer certaines parties du message. La chaîne est enfin reconstruite et envoyée à tous les utilisateurs.  
 \subsection{Pérennisation des informations utilisateur}
-L'application est actuellement en état de stase. Une application moderne se doit d'évoluer dans le temps. C'est dans cette perspective que nous conférerons à \emph{Sublim Telegram} le pouvoir de pérenniser ses données. Le serveur conservera dans un fichier les adresses des utilisateurs associées à leurs pseudonymes, ainsi que d'autres informations qui arriveront dans la suite de la conception. 
-\subsection{Gestion des droits et hiérarchisation}
-La prochaine étape consistera à instaurer une hiérarchie au sein du système. Un utilisateur (client associé à une IP) pourra être un utilisateur ordinaire ou un administrateur qui aura donc certains droits spécifiques (modification des droits utilisateurs, et exclusions).
+\emph{Sublim Telegram} a la possibilité de pérenniser ses données. Le serveur conservera dans un fichier les adresses des utilisateurs associées au nombre d'insulte détectés par l'analyseur syntaxique.
 \subsection{Salles de discutions}
-Une amélioration importante de \emph{Sublim Telegram} pourra alors être ajoutée. L'objectif est de pouvoir créer différentes salles de discussions gérées du coté serveur.
-\subsection{Activités multi-utilisateurs}
-Comme sur certains forum, il serait intéressant de proposer aux utilisateurs des activités ou jeux faisant participer l'ensemble de la salle de discussion.
-\subsection{Interface Homme Machine User-friendly}
-Enfin, la dernière étape consistera a confier à \emph{Sublim Telegram}. une interface graphique digne de son nom.
-\section{Implémentation}
+Une amélioration importante de \emph{Sublim Telegram} a été implémentée. L'objectif est de pouvoir créer différentes salles de discussions créés par les clients et gérées du coté serveur. Les utilisateurs peuvent donc discuter en privé dans des salles hermétiques.
+\subsection{Gestion des droits et hiérarchisation}
+Enfin, nous avons décidé de donner la possibilité aux clients de gérer leur salon. l'utilisateur créant la salle de discussion en devient son administrateur. Il est possible d'administrer le salon à l'aide de commandes commençant par le caractère '@'. 
+
+\section{Décisions d'implémentation}
 \subsection{Logiciel Client}
+\subsubsection{lancement du client}
+L'exécution du client requière 3 arguments:
+\begin{enumerate}
+    \item l'adresse du serveur.
+    \item le pseudo à utiliser
+    \item et le nom du salon à rejoindre ou à créer.
+\end{enumerate}
+un socket de communication est alors créé entre le client et le serveur et, le pseudo et le nom du salon est envoyé au serveur.
+
+Deux threads sont alors lancés. le premier s'occupe de la réception de message en provenance du serveur. Alors que Le second s'occupe de l'envoi de message vers ce dernier.
+
+à l'envoi, les messages sont automatiquement formatés: ils sont datés, identifiés à l'aide du pseudo et adressé par le nom du salon choisi. 
+
+Les messages réceptionnés s'affichent avec leur date et le pseudo de l'utilisateur l'ayant expedié.
+
+La fermeture du client s'effectue en pressant CTRL-C. une fonction est alors appellée. Elle ferme le socket et les threads puis envoie un message notifiant les autres utilisateurs du salon. 
+
 \subsection{Logiciel Serveur}
+Le serveur doit être exécuté dans le même répertoire que le dictionnaire et le fichier utilisateurs.
+
+
 \subsection{Structure de la trame}
 \end{document}
