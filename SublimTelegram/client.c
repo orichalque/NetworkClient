@@ -27,6 +27,8 @@ char *salon; //limite 16 char
 char pseudoWithComa[14];
 char pseudoWithComaAndRoom[26];
 
+//TODO creer 2 threads : boucle de reception message read()
+//                       boucle d'envoi message (ci dessous write)
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
