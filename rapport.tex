@@ -7,6 +7,8 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\newcommand{\Touche}[1]{\Ovalbox{#1}}
+\usepackage{fancybox}
 \author{Thibault \bsc{Béziers la Fosse}, Benjamin \bsc{Moreau}}
 \title{Sublim Telegram: Un système de communication}
 \pagestyle{fancy}
@@ -19,7 +21,7 @@
 \clearpage
 
 \section{Introduction}
-Dans le cadre de notre module de Réseaux en Master ALMA, nous avons eu à créer et implémenter une application Client/Serveur utilisant les protocoles TCP/IP, sous UNIX, avec le langage C. 
+Dans le cadre de notre module de Réseaux en Master ALMA, nous avons eu à créer et implémenter une application Client/Serveur utilisant les protocoles \emph{TCP/IP}, sous \emph{UNIX}, avec le langage \emph{C}. 
 Afin de remplir les objectifs du projet, nous avons décidé de développer un système de communication synchrone par terminal. Il intègre un analyseur syntaxique pour détecter les insultes, un système de salles de discutions, une gestion des droits, des commandes administrateur et un fichier permettant de pérenniser des informations sur les clients. 
 Nous détaillerons d'abord les fonctionnalités de notre application, puis quelques détails d'implémentations sur chaque fonction. 
 \section{Fonctionnalités}
@@ -33,30 +35,47 @@ Une fois la connexion établie, l'envoie d'un message entraînera une analyse sy
 \subsection{Salles de discutions}
 Une amélioration importante de \emph{Sublim Telegram} a été implémentée. L'objectif est de pouvoir créer différentes salles de discussions créés par les clients et gérées du coté serveur. Les utilisateurs peuvent donc discuter en privé dans des salles hermétiques.
 \subsection{Gestion des droits et hiérarchisation}
-Enfin, nous avons décidé de donner la possibilité aux clients de gérer leur salon. l'utilisateur créant la salle de discussion en devient son administrateur. Il est possible d'administrer le salon à l'aide de commandes commençant par le caractère '@'. 
+Enfin, nous avons décidé de donner la possibilité aux clients de gérer leur salon. l'utilisateur créant la salle de discussion en devient son administrateur. Il est possible d'administrer le salon à l'aide de commandes commençant par le caractère \emph{@}. 
 
-\section{Décisions d'implémentation}
+\section{Fonctionnement du client/serveur}
 \subsection{Logiciel Client}
 \subsubsection{lancement du client}
 L'exécution du client requière 3 arguments:
 \begin{enumerate}
     \item l'adresse du serveur.
-    \item le pseudo à utiliser
+    \item le pseudo de l'utilisateur.
     \item et le nom du salon à rejoindre ou à créer.
 \end{enumerate}
-un socket de communication est alors créé entre le client et le serveur et, le pseudo et le nom du salon est envoyé au serveur.
+\paragraph{}
+un \emph{socket} de communication est alors créé entre le client et le serveur. le pseudo et le nom du salon sont envoyés au serveur.
 
-Deux threads sont alors lancés. le premier s'occupe de la réception de message en provenance du serveur. Alors que Le second s'occupe de l'envoi de message vers ce dernier.
+Deux \emph{threads} sont alors lancés. le premier s'occupe de la réception de message en provenance du serveur. Alors que Le second s'occupe de l'envoi de message vers ce dernier.
 
-à l'envoi, les messages sont automatiquement formatés: ils sont datés, identifiés à l'aide du pseudo et adressé par le nom du salon choisi. 
+\subsubsection{Envoi et réception de messages}
+À l'envoi, les messages sont automatiquement formatés: ils sont datés, identifiés à l'aide du pseudo et adressé par le nom du salon choisi. Les messages réceptionnés s'affichent avec leur date et le pseudo de l'utilisateur l'ayant expédié.
 
-Les messages réceptionnés s'affichent avec leur date et le pseudo de l'utilisateur l'ayant expedié.
-
-La fermeture du client s'effectue en pressant CTRL-C. une fonction est alors appellée. Elle ferme le socket et les threads puis envoie un message notifiant les autres utilisateurs du salon. 
+\subsubsection{Fermeture du client}
+La fermeture du client s'effectue en pressant : \Touche{Ctrl} + \Touche{C}. une fonction est alors appelée. Cette dernière s'occupe de fermer le \emph{socket} et les \emph{threads} puis envoie un message notifiant les autres utilisateurs du salon.
 
 \subsection{Logiciel Serveur}
+\subsubsection{Lancement du serveur}
 Le serveur doit être exécuté dans le même répertoire que le dictionnaire et le fichier utilisateurs.
+\paragraph{}
+La programme principal contient une boucle d'acceptation client. elle permet, durant l'exécution, d'accepter les connexions avec de nouveaux clients.
 
+\subsubsection{Détection et d'un client}
+A la création d'un \emph{socket} entre le nouveau client et le serveur, un \emph{threads} est lancé. Ce code exécuté en concurrence permet de recevoir des messages du client et  de les renvoyer à chaque utilisateur.
+\paragraph{}
+Quand un \emph{socket} est créé, l'adresse du client est récupérée et stockée dans le fichier ulisateur.txt si cette dernière n'y est pas déjà présente. l'\emph{id} du \emph{socket} est alors stocké dans une structure spéciale représentant les utilisateurs présents dans chaque salons.
+En effet, les salles de discussions sont stockés dans un tableau et chaque salle de discussion contient un tableau d'\emph{id} de \emph{socket} représentant les utilisateurs du salon.
+
+\subsubsection{Réception et distribution des messages}
+À la réception d'un message, une analyse syntaxique est faite. Chaque mot est comparé au dictionnaire d'insulte. Pour chaque mot reconnu, ses caractères sont remplacés par des \emph{*} et le second champ présent dans le fichier \emph{utilisateur.txt}, à la ligne correspondant à l'utilisateur ayant envoyé le message, est incrémenté. Ce champ séparé de l'adresse par un \emph{:} représente donc le nombre d'insultes exprimées par le client.
+
+Quand le message est enfin analysé, le nom de la salle de discussion est extraite de la trame et ce dernier est envoyé à tous les utilisateurs présent dans ce salon. Ces clients sont trouvé en effectuant une simple recherche dans la structure décrite ci dessus.
+
+\subsubsection{Fermeture du serveur}
+La fermeture du serveur s'effectue en pressant \Touche{Ctrl} + \Touche{C}. une fonction est alors appelée. Elle ferme les \emph{sockets} et les \emph{threads} puis envoie un message notifiant les utilisateurs.
 
 \subsection{Structure de la trame}
 \end{document}
