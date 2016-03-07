@@ -46,6 +46,10 @@ void readWords(dictionnary* d) {
 		i = i + 1;
 		d -> sz ++;
 	}
+	
+	for (i = 0; i < d->sz; i++){
+		printf("%s\n", d -> words[i]);
+	}
 	fclose(fp);
 }
 

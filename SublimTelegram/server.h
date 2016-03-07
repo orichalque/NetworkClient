@@ -41,7 +41,7 @@ typedef struct{
 //Dictionnary of 50 words of size 16chars
 typedef struct{
 	int sz;
-	char words[50][16];
+	char words[50][19];
 } dictionnary;
 
 
