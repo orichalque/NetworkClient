@@ -10,22 +10,21 @@ pthread_mutex_t mutexUserFile;
 sockaddr_in ips[50];
 
 /* 1 -> envoi reussi */
-int sendMessageToRoom(char* roomName, char* msg) {
+void * sendMessageToRoom(void* rMsg) {
 	int curr;
-	
+	msgToRoomStruct* roomMsg = rMsg;
 	int i = room.sz;
 	for (curr = 0; curr < i; ++curr){
-		if (strcmp(room.room[curr].name, roomName) == 0){
+		if (strcmp(room.room[curr].name, roomMsg -> roomName) == 0){
 			//bonne room
 			int curr2;
 			for (curr2 =0; curr2 < room.room[curr].sz; ++curr){
-				write(room.room[curr].socks[curr2], msg, strlen(msg)+1);
+				write(room.room[curr].socks[curr2], roomMsg -> msg, strlen(roomMsg -> msg)+1);
 			}
-			return 1;
 		}
 	}
-	return 0;
 }
+
 
 //Used to read the dictionnary and store it in an array
 void readWords(dictionnary* d) {
@@ -261,7 +260,14 @@ void *renvoi_message(void *arg){
 			write(*sock, "0", 1);
 		}
 		//ecriture dans la room
-		sendMessageToRoom(roomname, message);
+		pthread_t t;
+		msgToRoomStruct msgStr;
+		msgStr.roomName = roomname;
+		msgStr.msg = message;
+		// Envoi du message
+		if (pthread_create(&t, NULL, sendMessageToRoom, (void*)&msgStr) == -1){
+    		perror("pthread_create");    	
+    	}
 		memset(buffer,' ',strlen(buffer));
     }
 	pthread_exit(NULL);

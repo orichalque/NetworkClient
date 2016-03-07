@@ -44,13 +44,20 @@ typedef struct{
 	char words[50][16];
 } dictionnary;
 
+
+typedef struct {
+    char* roomName;
+    char* msg;
+}msgToRoomStruct ;
+
+
 void stop();
 int addUser(users *u, int* sock);
 void *thread_1(void *arg);
 void *renvoi_message(void *arg);
 void readWords(dictionnary* d);
 char* analyseMessage(char* message, dictionnary *d, int* sock);
-
+void * sendMessageToRoom(void* roomMsg);
 #ifdef	__cplusplus
 }
 #endif
