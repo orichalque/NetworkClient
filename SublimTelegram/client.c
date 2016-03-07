@@ -11,6 +11,8 @@ client <adresse-serveur> <pseudonyme>
 #include <pthread.h>
 #include <signal.h>
 
+//TODO definir signification des messages systemes
+
 //Structures sockets
 typedef struct sockaddr 	sockaddr;
 typedef struct sockaddr_in 	sockaddr_in;

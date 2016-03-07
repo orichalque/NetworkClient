@@ -278,10 +278,17 @@ void *renvoi_message(void *arg){
 
 /*------------------------------------------------------*/
 void stop() {
-	//TODO fermer socket threads
-	int roomNb;
-	int sockNb;
 
+	int curr;
+	int curr2;
+	int i = room.sz;
+	for (curr = 0; curr < i; ++curr){
+			for (curr2 =0; curr2 < room.room[curr].sz; ++curr2){
+				write(room.room[curr].socks[curr2], "0", 1);
+				close(room.room[curr].socks[curr2]);
+			}
+	}
+	pthread_cancel(t1);
 	printf("Fermeture du serveur \n");
 	exit(0);
 }
