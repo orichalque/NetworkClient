@@ -3,11 +3,12 @@ Serveur à lancer avant le client
 ------------------------------------------------*/
 #include "server.h"
 
-users user;
 rooms room;
 dictionnary dict;
 pthread_mutex_t mutexUserFile;
+pthread_mutex_t mutexRoom;
 sockaddr_in ips[50];
+pthread_t t1;
 
 /* 1 -> envoi reussi */
 void * sendMessageToRoom(void* rMsg) {
@@ -19,7 +20,9 @@ void * sendMessageToRoom(void* rMsg) {
 			//bonne room
 			int curr2;
 			for (curr2 =0; curr2 < room.room[curr].sz; ++curr){
+				printf("%d\n",room.room[curr].socks[curr2]);
 				write(room.room[curr].socks[curr2], roomMsg -> msg, strlen(roomMsg -> msg)+1);
+				printf("%d\n",room.room[curr].socks[curr2]);
 			}
 		}
 	}
@@ -139,10 +142,12 @@ int addUser(users *u, int* sock) {
 		//salle existante mais vide
 		u -> sz = 1;
 		u -> socks[0] = *sock;
+		pthread_mutex_unlock(&mutexRoom);
 		return 1;
 	} else {
 		if (u -> sz >= 10){
 			//Salle pleine
+			pthread_mutex_unlock(&mutexRoom);
 			return 0;
 		}		
 		
@@ -151,14 +156,18 @@ int addUser(users *u, int* sock) {
 		for (i = 0; i < u -> sz; ++i){
 			if (u -> socks[i] == *sock){
 				//sock deja present
+				printf("deja présent\n");
+				pthread_mutex_unlock(&mutexRoom);
 				return 1;
-			} 
-		}		
+			}
+		}
 		printf("%d", *sock);
-		u -> socks[u -> sz] = *sock;
-		u -> sz ++;					
+		u ->socks[u -> sz] = *sock;
+		u -> sz ++;
+		printf("non présent\n");
 		char* message = "Vous avez rejoint une salle.\n";
-		write(*sock, message, strlen(message)+1);	
+		write(*sock, message, strlen(message)+1);
+		pthread_mutex_unlock(&mutexRoom);
 		return 1;
 	}
 }
@@ -167,42 +176,41 @@ int addUser(users *u, int* sock) {
  *@brief Ajout d'utilisateur dans une room. Si la room existe pas on la crée
  *
  */
-int addUserInRoom(rooms *room, int* sock, char* roomName){
+int addUserInRoom(int* sock, char* roomName){
+	pthread_mutex_lock(&mutexRoom);
 	int cpt;
-	int added = 0;
-	if (!room->sz){
+	if (!room.sz){
 		//aucune salle existe on la crée:
-		room->room[0].name = roomName;
-		room->sz = 1;	
+		room.room[0].name = roomName;
+		room.sz = 1;	
 		//On ajoute l'utilisateur
 		char* message = "Vous avez crée une salle.\n";
 		write(*sock, message, strlen(message)+1);
-		return addUser(&room->room[room->sz-1], sock);
+		return addUser(&(room.room[room.sz-1]), sock);
 	}
 	
-	for (cpt = 0; cpt < room -> sz; cpt++){
-		if (strcmp(room->room[cpt].name, roomName) == 0){
+	for (cpt = 0; cpt < room.sz; cpt++){
+		if (strcmp(room.room[cpt].name, roomName) == 0){
 			//La salle existe déjà
-			//On ajoute l'utilisateur dedans			
-			added = 1;			
-			return addUser(&room->room[cpt], sock);
+			//On ajoute l'utilisateur dedans
+			return addUser(&(room.room[cpt]), sock);
 						
 		}
 	}
 	
-	if (!added){
 		//La salle n'existe pas, on la crée:
-		if (room->sz >= 10){
+		if (room.sz >= 10){
 			char* message = "Le serveur est complet. Rejoignez une salle déjà existante.\n";
 			write(*sock, message, strlen(message)+1);
+			pthread_mutex_unlock(&mutexRoom);
 			return 0;
 			
 		}
-		room->room[room->sz].name = roomName;
-		room->sz ++;	
+		room.room[room.sz].name = roomName;
+		room.sz ++;	
 		//On ajoute l'utilisateur
-		return addUser(&room->room[room->sz-1], sock);
-	}
+		pthread_mutex_unlock(&mutexRoom);
+		return addUser(&(room.room[room.sz-1]), sock);
 }
 
 char* analyseMessage(char* message, dictionnary *d, int* sock) {
@@ -228,8 +236,6 @@ void *renvoi_message(void *arg){
     int * sock = arg;
     // Récupérer les 12 premiers caractères de la trame --> room
 	
-	
-
     time_t seconds;
     struct tm instant;
 
@@ -256,7 +262,7 @@ void *renvoi_message(void *arg){
 		snprintf(message, sizeof message, "%s %s \n", date, buffer2);
 		analyseMessage(message, &dict, sock);
 		int i = 0;
-		if( !addUserInRoom(&room, sock, roomname) ) {
+		if( !addUserInRoom(sock, roomname) ) {
 			write(*sock, "0", 1);
 		}
 		//ecriture dans la room
@@ -275,10 +281,7 @@ void *renvoi_message(void *arg){
 
 /*------------------------------------------------------*/
 void stop() {
-	int i = 0;
-	for (i = 0; i < user.sz; ++i){
-		close(user.socks[i]);
-	}
+	//TODO fermer socket threads
 	printf("Fermeture du serveur \n");
 	exit(0);
 }
@@ -297,8 +300,6 @@ main(int argc, char **argv) {
     
     gethostname(machine,TAILLE_MAX_NOM);		/* recuperation du nom de la machine */
     readWords(&dict);
-    
-    user.sz = 0; //initialisation des users
     
     /* recuperation de la structure d'adresse en utilisant le nom */
     if ((ptr_hote = gethostbyname(machine)) == NULL) {
@@ -354,7 +355,6 @@ main(int argc, char **argv) {
 			exit(1);
 		}
 		
-		pthread_t t1;
 		updateUserFile(adresse_client_courant);
 		//association socket -> ip
 		ips[nouv_socket_descriptor] = adresse_client_courant;

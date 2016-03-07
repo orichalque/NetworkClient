@@ -20,6 +20,10 @@ typedef struct servent 		servent;
 sockaddr_in adresse_locale;
 hostent *ptr_host;
 servent *ptr_service;
+
+pthread_t t1;
+pthread_t t2;
+
 int socket_descriptor;
 char *host;
 char *pseudo;
@@ -27,8 +31,6 @@ char *salon; //limite 16 char
 char pseudoWithComa[14];
 char pseudoWithComaAndRoom[26];
 
-//TODO creer 2 threads : boucle de reception message read()
-//                       boucle d'envoi message (ci dessous write)
 //code thread envoi message
 void *envoi_message(void* arg){
     char buffer[256];
@@ -44,14 +46,24 @@ void *envoi_message(void* arg){
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
 		exit(1);
     }
+    pthread_exit(NULL);
+}
+
+//code thread reception message
+void *reception_message(void* arg){
+    char buffer[256];
+    int longueur;
+
     // lecture de la reponse en provenance du serveur
-    while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
-    	if (!strcmp(buffer, "0")){
-    		printf("Deconnection");
-    		exit(1);
-    	}
-		write(1,buffer,longueur);
-    } 
+    while(1){
+		while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
+			if (!strcmp(buffer, "0")){
+				printf("Deconnection");
+				exit(1);
+			}
+			write(1,buffer,longueur);
+		}
+    }
     pthread_exit(NULL);
 }
 
@@ -68,6 +80,8 @@ void stop(){
 		exit(1);
     }
     close(socket_descriptor);
+    pthread_cancel(t1);
+    pthread_cancel(t2);
     
     printf("connexion avec le serveur fermee, fin du programme.\n");
     exit(0);
@@ -135,11 +149,11 @@ int main(int argc, char **argv) {
 
     //execution de stop() si l'utilisateur presse CTRL+C
     signal(SIGINT,stop);
-
+    if (pthread_create(&t2, NULL, (void*(*)(void*))reception_message, NULL) == -1){
+				perror("Impossible de creer le thread de reception de message");
+	}
     while (1){
 		fgets(mesg, 489, stdin); //pas plus de 489 car + car fin chaine
-		
-		pthread_t t1;
 		if (pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg) == -1){
 				perror("Impossible de creer le thread d'envoi de message");
 		}
