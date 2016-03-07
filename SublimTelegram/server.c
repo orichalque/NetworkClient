@@ -19,10 +19,8 @@ void * sendMessageToRoom(void* rMsg) {
 		if (strcmp(room.room[curr].name, roomMsg -> roomName) == 0){
 			//bonne room
 			int curr2;
-			for (curr2 =0; curr2 < room.room[curr].sz; ++curr){
-				printf("%d\n",room.room[curr].socks[curr2]);
+			for (curr2 =0; curr2 < room.room[curr].sz; ++curr2){
 				write(room.room[curr].socks[curr2], roomMsg -> msg, strlen(roomMsg -> msg)+1);
-				printf("%d\n",room.room[curr].socks[curr2]);
 			}
 		}
 	}
@@ -161,7 +159,6 @@ int addUser(users *u, int* sock) {
 				return 1;
 			}
 		}
-		printf("%d", *sock);
 		u ->socks[u -> sz] = *sock;
 		u -> sz ++;
 		printf("non présent\n");
@@ -282,6 +279,9 @@ void *renvoi_message(void *arg){
 /*------------------------------------------------------*/
 void stop() {
 	//TODO fermer socket threads
+	int roomNb;
+	int sockNb;
+
 	printf("Fermeture du serveur \n");
 	exit(0);
 }
