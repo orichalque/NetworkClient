@@ -78,4 +78,61 @@ Quand le message est enfin analysé, le nom de la salle de discussion est extrai
 La fermeture du serveur s'effectue en pressant \Touche{Ctrl} + \Touche{C}. une fonction est alors appelée. Elle ferme les \emph{sockets} et les \emph{threads} puis envoie un message notifiant les utilisateurs.
 
 \subsection{Structure de la trame}
+\subsubsection{Message utilisateur}
+Un message envoyé par un utilisateur au serveur, est inscrit dans le bouffer sous le format suivant
+\paragraph{}
+\begin{tabular}{|p{2cm}|p{1.6cm}|p{1.5cm}|p{5cm}| }
+ \hline			
+   [hh:mm:ss] & salon & pseudo: & message \\
+ \hline		
+    18 char & 16 char & 14 char & 256 char \\
+ \hline  
+ \end{tabular}
+ \paragraph{}
+Le message est reçu par le serveur qui s'occupe de renvoyer le message à tout les clients du salon inscrit dans le message.
+Ce dernier element est enlevé de la trame juste avant l'envoi ce qui donne le message ci dessous.
+\paragraph{}
+ \begin{tabular}{|p{2cm}|p{1.5cm}|p{5cm}| }
+  \hline			
+    [hh:mm:ss] & pseudo: & message \\
+  \hline		
+     18 char & 14 char & 256 char \\
+  \hline  
+  \end{tabular}
+\subsubsection{Commande administrateur}
+Une commande administrateur est envoyée du client au serveur sous cette forme.
+\paragraph{}
+\begin{tabular}{|p{2cm}|p{1.6cm}|p{1.5cm}|p{5cm}| }
+ \hline			
+   [hh:mm:ss] & salon & pseudo: & @commande \\
+ \hline		
+    18 char & 16 char & 14 char & 6 char \\
+ \hline  
+ \end{tabular}
+ \paragraph{}
+la commande commence par un \emph{@} et ne fait pas plus de 6 caractères.
+Actuellement seul la commande \emph{@close} est implémentée. Elle permet de fermer le salon et d'y expulser tout les utilisateurs.
+La commande \emph{@close} est reçu par le serveur et un message système est envoyé à tout les utilisateurs.
+\subsubsection{Messages systèmes}
+Un message système est envoyé du serveur et permet de prévenir un client d'une anomalie ou d'une déconnexion.
+\paragraph{}
+\begin{tabular}{|c|}
+ \hline			
+   $id_{message}$\\
+ \hline		
+    1 char \\
+ \hline  
+ \end{tabular}
+\paragraph{}
+Le client recevant un tel message va voir apparaître un message d'erreur et est déconnecté.
+Voici la table de correspondance des $id_{message}$ avec leur signification.
+\paragraph{}
+\begin{tabular}{|c|c|}
+ \hline		
+    0 & truc truc \\
+ \hline  
+ 	1 & truc truc2 \\
+ \hline
+ \end{tabular}
+
 \end{document}
