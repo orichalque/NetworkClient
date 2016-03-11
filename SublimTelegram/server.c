@@ -2,7 +2,7 @@
 Serveur à lancer avant le client
 ------------------------------------------------*/
 #include "server.h"
-
+//TODO Shifting des sockets lors d'une deconnection
 rooms room;
 dictionnary dict;
 pthread_mutex_t mutexUserFile;
@@ -47,9 +47,6 @@ void readWords(dictionnary* d) {
 		d -> sz ++;
 	}
 	
-	for (i = 0; i < d->sz; i++){
-		printf("%s\n", d -> words[i]);
-	}
 	fclose(fp);
 }
 
@@ -231,6 +228,25 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	}
 	return message;
 }
+
+char* getServerResponse(char* commandLine){
+	char *response;
+	if (!strcmp(commandLine, "@exit")){
+		response = "Vous allez être kick\n";
+	} else
+	if (!strcmp(commandLine, "@kick")){
+		response = "Vous allez kick quelqu'un\n";
+	} else
+	if (!strcmp(commandLine, "@help")){
+		response = "Fermer la room: @exit\n kick: @kick _sock\n, help: @help\n, socks: @sock\n";
+	} else
+	if (!strcmp(commandLine, "@sock")){
+		response = "Jai pas ajoute les socks\n";
+	} else {
+		response = "Commande incorrecte\n";
+	}
+	return response;
+}
 /*------------------------------------------------------*/
 
 void *renvoi_message(void *arg){
@@ -243,29 +259,56 @@ void *renvoi_message(void *arg){
     //boucle de communication avec un client
     while(1){
     	char date[11];
-    	char message[490];
+    	char message[491];
     	char roomname[14];
     	int longueur;
     	char buffer2[242];
-    	char buffer[256];
+    	char buffer[257];
+
+    	
+    	char command;
+    	
 		if ((longueur = read(*sock, buffer, sizeof(buffer))) <= 0){
 			continue;
 		}
-		//recuperation du nom de la room
-		printf("---%s\n",buffer);
-		memcpy(roomname, buffer, 14);
-		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
 		
+		/* Création de la trame */
+		
+		printf("---%s\n",buffer);
+		//Récupération du type de message
+		command = buffer[0];
+		//Traitement du message;
+
+		//recuperation du nom de la room
+		memcpy(roomname, buffer, 14);
+		addUserInRoom(arg, roomname);
+		
+		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
+		if (command == '0'){
+			//récupération du message
+			
+		} else if (command == '1'){
+			//Commande utilisateur de type @command
+			//Recupération de la commande 
+			char commandLine[5];
+			memcpy(commandLine, buffer2, 5);
+			strcpy(buffer2, getServerResponse(commandLine));
+		}
+		
+		
+		
+		//Création du champs date
 		time(&seconds);
     	instant = *localtime(&seconds);
-		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec);
-		buffer2[longueur] ='\0';
-		snprintf(message, sizeof message, "%s %s \n", date, buffer2);
+    	
+    	//Concaténation des champs
+		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec); //Date 
+		snprintf(message, sizeof message, "%c%s %s \n", command, date, buffer2); // Command + Date + Message
 		analyseMessage(message, &dict, sock);
+		
 		int i = 0;
-		if( !addUserInRoom(sock, roomname) ) {
-			write(*sock, "0", 1);
-		}
+		
+		
 		//ecriture dans la room
 		pthread_t t;
 		msgToRoomStruct msgStr;
