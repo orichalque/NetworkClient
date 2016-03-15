@@ -11,8 +11,6 @@ client <adresse-serveur> <pseudonyme>
 #include <pthread.h>
 #include <signal.h>
 
-//TODO definir signification des messages systemes
-
 //Structures sockets
 typedef struct sockaddr 	sockaddr;
 typedef struct sockaddr_in 	sockaddr_in;
@@ -33,42 +31,6 @@ char *salon; //limite 16 char
 char pseudoWithComa[14];
 char pseudoWithComaAndRoom[26];
 
-//code thread envoi message
-void *envoi_message(void* arg){
-    char buffer[256];
-    char mesg[512];
-    int longueur;
-
-	strcpy(mesg, pseudoWithComaAndRoom);    
-	strcat(mesg, arg);
-
-    mesg[strlen(mesg)-1]='\0';
-    // envoi du message vers le serveur
-    if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
-		perror("erreur : impossible d'ecrire le message destine au serveur.");
-		exit(1);
-    }
-    pthread_exit(NULL);
-}
-
-//code thread reception message
-void *reception_message(void* arg){
-    char buffer[256];
-    int longueur;
-
-    // lecture de la reponse en provenance du serveur
-    while(1){
-		while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
-			if (!strcmp(buffer, "0")){
-				printf("Deconnection");
-				exit(1);
-			}
-			write(1,buffer,longueur);
-		}
-    }
-    pthread_exit(NULL);
-}
-
 // Fonction d'arret
 void stop(){
     //message automatique pour prevenir de la deconnexion
@@ -87,6 +49,74 @@ void stop(){
     
     printf("connexion avec le serveur fermee, fin du programme.\n");
     exit(0);
+}
+
+//code thread envoi message
+void *envoi_message(void* arg){
+    char buffer[257];
+    char mesg[512];
+    int longueur;
+    char input[256];
+    strcpy(input,arg);
+    if(input[0]=='@'){//commande utilisateur
+    	strcpy(mesg,"1");
+		strcat(mesg, pseudoWithComaAndRoom);  
+		strcat(mesg, arg);
+    }else{// message utilisateur
+		strcpy(mesg,"0");
+		strcat(mesg, pseudoWithComaAndRoom);  
+		strcat(mesg, arg);
+	}
+    mesg[strlen(mesg)-1]='\0';
+    // envoi du message vers le serveur
+    if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
+		perror("erreur : impossible d'ecrire le message destine au serveur.");
+		stop();
+    }
+    pthread_exit(NULL);
+}
+
+//code thread reception message
+void *reception_message(void* arg){
+    char buffer[257];
+    int longueur;
+
+    // lecture de la reponse en provenance du serveur
+    while(1){
+		while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
+			if (buffer[0]=='0'){//Message utilisateur recu
+				write(1,buffer,longueur);
+			}else if(buffer[0]=='2'){//Message systeme recu
+				printf("######-Message systeme-######\n");
+				if (buffer[1]=='0'){
+					printf("Le salon a ete ferme par l'administrateur\n");
+					printf("Deconnexion ...\n");
+					stop();
+				}else if(buffer[1]=='1'){
+					printf("Le serveur a ete interrompue ferme\n");
+					printf("Deconnexion ...\n");
+					stop();
+				}else if(buffer[1]=='2'){
+					printf("Vous etes expulse du serveur. Un peu de courtoisie. Merci !\n");
+					printf("Deconnexion ...\n");
+					stop();
+				}else if(buffer[1]=='3'){
+					printf("le salon est plein. Revenez plus tard\n");
+					printf("Deconnexion ...\n");
+					stop();
+				}else if(buffer[1]=='4'){
+					printf("Vous venez de creer un salon.\n");
+				}else if(buffer[1]=='4'){
+					printf("Vous venez de rejoindre un salon.\n");
+				}else{
+					printf("message systeme inconnu.\n");
+				}
+			}else{
+				printf("Message incoherent\n");
+			}
+		}
+    }
+    pthread_exit(NULL);
 }
 
 int main(int argc, char **argv) {	

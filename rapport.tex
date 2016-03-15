@@ -78,35 +78,49 @@ Quand le message est enfin analysé, le nom de la salle de discussion est extrai
 La fermeture du serveur s'effectue en pressant \Touche{Ctrl} + \Touche{C}. une fonction est alors appelée. Elle ferme les \emph{sockets} et les \emph{threads} puis envoie un message notifiant les utilisateurs.
 
 \subsection{Structure de la trame}
-\subsubsection{Message utilisateur}
-Un message envoyé par un utilisateur au serveur, est inscrit dans le bouffer sous le format suivant
+L'ensemble de nos trames sont composés d'un entier placé en début de chaîne indiquant le type de message.
+Actuellement, il existe 3 sortes de messages:
 \paragraph{}
-\begin{tabular}{|p{2cm}|p{1.6cm}|p{1.5cm}|p{5cm}| }
+\begin{tabular}{|c|c|}
  \hline			
-   [hh:mm:ss] & salon & pseudo: & message \\
+   id & signification \\
  \hline		
-    18 char & 16 char & 14 char & 256 char \\
+   0 & Message utilisateur \\
+ \hline
+   1 & Commande administrateur \\
+ \hline
+   2 & Message système \\
+ \hline
+ \end{tabular}
+\subsubsection{Message utilisateur}
+Un message envoyé par un utilisateur au serveur, est inscrit dans le buffer sous le format suivant
+\paragraph{}
+\begin{tabular}{|p{0.5cm}|p{2cm}|p{1.6cm}|p{1.5cm}|p{5cm}| }
+ \hline			
+  0 & [hh:mm:ss] & salon & pseudo: & message \\
+ \hline		
+  int & 18 char & 16 char & 14 char & 256 char \\
  \hline  
  \end{tabular}
  \paragraph{}
 Le message est reçu par le serveur qui s'occupe de renvoyer le message à tout les clients du salon inscrit dans le message.
 Ce dernier element est enlevé de la trame juste avant l'envoi ce qui donne le message ci dessous.
 \paragraph{}
- \begin{tabular}{|p{2cm}|p{1.5cm}|p{5cm}| }
+ \begin{tabular}{|p{0.5cm}|p{2cm}|p{1.5cm}|p{5cm}| }
   \hline			
-    [hh:mm:ss] & pseudo: & message \\
+    0 & [hh:mm:ss] & pseudo: & message \\
   \hline		
-     18 char & 14 char & 256 char \\
+    int & 18 char & 14 char & 256 char \\
   \hline  
   \end{tabular}
 \subsubsection{Commande administrateur}
 Une commande administrateur est envoyée du client au serveur sous cette forme.
 \paragraph{}
-\begin{tabular}{|p{2cm}|p{1.6cm}|p{1.5cm}|p{5cm}| }
+\begin{tabular}{|p{0.5cm}|p{2cm}|p{1.6cm}|p{1.5cm}|p{5cm}| }
  \hline			
-   [hh:mm:ss] & salon & pseudo: & @commande \\
+  1 & [hh:mm:ss] & salon & pseudo: & @commande \\
  \hline		
-    18 char & 16 char & 14 char & 6 char \\
+  int & 18 char & 16 char & 14 char & 6 char \\
  \hline  
  \end{tabular}
  \paragraph{}
@@ -116,11 +130,11 @@ La commande \emph{@close} est reçu par le serveur et un message système est en
 \subsubsection{Messages systèmes}
 Un message système est envoyé du serveur et permet de prévenir un client d'une anomalie ou d'une déconnexion.
 \paragraph{}
-\begin{tabular}{|c|}
+\begin{tabular}{|c|c|}
  \hline			
-   $id_{message}$\\
+   2 & $id_{message}$\\
  \hline		
-    1 char \\
+   int & int \\
  \hline  
  \end{tabular}
 \paragraph{}
@@ -129,10 +143,20 @@ Voici la table de correspondance des $id_{message}$ avec leur signification.
 \paragraph{}
 \begin{tabular}{|c|c|}
  \hline		
-    0 & truc truc \\
+    $id_{message}$ & utilisation \\
+ \hline		
+    0 & fermeture salon \\
  \hline  
- 	1 & truc truc2 \\
+ 	1 & fermeture serveur \\
  \hline
- \end{tabular}
+ 	2 & utilisateur kick \\
+ \hline
+ 	3 & salon plein \\
+ \hline
+ 	4 & salon créé \\
+ \hline
+ 	5 & salon rejoins \\
+ \hline
+\end{tabular}
 
 \end{document}
