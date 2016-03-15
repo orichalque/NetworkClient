@@ -146,6 +146,7 @@ int addUser(users *u, int* sock) {
 	} else {
 		if (u -> sz >= 10){
 			//Salle pleine
+			write(*sock, "23", 3);
 			pthread_mutex_unlock(&mutexRoom);
 			return 0;
 		}		
@@ -154,17 +155,14 @@ int addUser(users *u, int* sock) {
 		int i;
 		for (i = 0; i < u -> sz; ++i){
 			if (u -> socks[i] == *sock){
-				//sock deja present
-				printf("deja présent\n");
+				//sock deja present				
 				pthread_mutex_unlock(&mutexRoom);
 				return 1;
 			}
 		}
 		u ->socks[u -> sz] = *sock;
 		u -> sz ++;
-		printf("non présent\n");
-		char* message = "Vous avez rejoint une salle.\n";
-		write(*sock, message, strlen(message)+1);
+		write(*sock, "25", 3);
 		pthread_mutex_unlock(&mutexRoom);
 		return 1;
 	}
@@ -182,8 +180,8 @@ int addUserInRoom(int* sock, char* roomName){
 		room.room[0].name = roomName;
 		room.sz = 1;	
 		//On ajoute l'utilisateur
-		char* message = "Vous avez crée une salle.\n";
-		write(*sock, message, strlen(message)+1);
+		//Salon crée
+		write(*sock, "24", 3);
 		return addUser(&(room.room[room.sz-1]), sock);
 	}
 	
@@ -198,8 +196,6 @@ int addUserInRoom(int* sock, char* roomName){
 	
 		//La salle n'existe pas, on la crée:
 		if (room.sz >= 10){
-			char* message = "Le serveur est complet. Rejoignez une salle déjà existante.\n";
-			write(*sock, message, strlen(message)+1);
 			pthread_mutex_unlock(&mutexRoom);
 			return 0;
 			
@@ -231,19 +227,20 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 
 char* getServerResponse(char* commandLine){
 	char *response;
-	if (!strcmp(commandLine, "@exit")){
-		response = "Vous allez être kick\n";
+	if (!strcmp(commandLine, "@exit\0")){
+		response = "20";
+		printf("@exit\n");
 	} else
-	if (!strcmp(commandLine, "@kick")){
-		response = "Vous allez kick quelqu'un\n";
+	if (!strcmp(commandLine, "@kick\0")){
+		response = "22";
 	} else
-	if (!strcmp(commandLine, "@help")){
-		response = "Fermer la room: @exit\n kick: @kick _sock\n, help: @help\n, socks: @sock\n";
+	if (!strcmp(commandLine, "@help\0")){
+		response = "26";
 	} else
-	if (!strcmp(commandLine, "@sock")){
-		response = "Jai pas ajoute les socks\n";
+	if (!strcmp(commandLine, "@sock\0")){
+		response = "27";
 	} else {
-		response = "Commande incorrecte\n";
+		response = "28";
 	}
 	return response;
 }
@@ -283,6 +280,7 @@ void *renvoi_message(void *arg){
 		memcpy(roomname, buffer, 14);
 		addUserInRoom(arg, roomname);
 		
+		//On enleve la room
 		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
 		if (command == '0'){
 			//récupération du message
@@ -290,9 +288,15 @@ void *renvoi_message(void *arg){
 		} else if (command == '1'){
 			//Commande utilisateur de type @command
 			//Recupération de la commande 
-			char commandLine[5];
-			memcpy(commandLine, buffer2, 5);
-			strcpy(buffer2, getServerResponse(commandLine));
+			char *commandLine = malloc(6* sizeof(char));
+			printf("buffer2: %s\n", buffer2);
+			//on prend les 5 dernier char
+			memcpy(commandLine, buffer2+strlen(buffer2)-5*sizeof(char), 5);
+			commandLine[6] = '\0';
+			char resp[2];
+			printf("commande: %s||\n", commandLine);
+			memcpy(resp, getServerResponse(commandLine), 2);
+			write(*sock, resp, 2);
 		}
 		
 		
@@ -331,7 +335,7 @@ void stop() {
 	int i = room.sz;
 	for (curr = 0; curr < i; ++curr){
 			for (curr2 =0; curr2 < room.room[curr].sz; ++curr2){
-				write(room.room[curr].socks[curr2], "0", 1);
+				write(room.room[curr].socks[curr2], "21", 3);
 				close(room.room[curr].socks[curr2]);
 			}
 	}
