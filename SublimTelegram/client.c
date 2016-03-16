@@ -106,7 +106,7 @@ void *reception_message(void* arg){
 					stop();
 				}else if(buffer[1]=='4'){
 					printf("Vous venez de creer un salon.\n");
-				}else if(buffer[1]=='4'){
+				}else if(buffer[1]=='5'){
 					printf("Vous venez de rejoindre un salon.\n");
 				}else{
 					printf("message systeme inconnu.\n");

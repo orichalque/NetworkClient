@@ -5,20 +5,85 @@ Serveur à lancer avant le client
 //TODO Shifting des sockets lors d'une deconnection
 rooms room;
 dictionnary dict;
+int currentSock;
 pthread_mutex_t mutexUserFile;
 pthread_mutex_t mutexRoom;
 sockaddr_in ips[50];
 pthread_t t1;
 
+/*-----------------------------------------------------*/
+int removeRoom(char* roomName){
+	int i, j;
+	while (i < room.sz && (strcmp(room.room[i].name, roomName) != 0)){		
+		++i;
+	}
+	if (i == room.sz){
+		return 0;
+	} 		
+	//bonne room
+	while (i < room.sz -2){
+		room.room[i] = room.room[i+1];
+	}
+	room.sz = room.sz - 1;
+	return 1;
+}
+
+/*------------------------------------------------------*/
+int removeSocketFromRoom(int* sock, char* roomName){
+	int i, j;
+	pthread_mutex_lock(&mutexRoom);
+	for (i = 0; i < room.sz; ++i){
+		if (strcmp(room.room[i].name, roomName) == 0){
+			//bonne room
+			j = 0;
+			
+			//On se rend a la cellule ou est lelement a retirer
+			while (room.room[i].socks[j] != *sock){
+				j++;
+			}
+			
+			//On decalle tous les elements suivants
+			while (j < (room.room[i].sz -2)){
+				room.room[i].socks[j] = room.room[i].socks[j+1];
+			}
+			
+			//On reduit la taille de 1, comme ça le dernier element ne compte plus
+			room.room[i].sz = room.room[i].sz - 1;
+			
+			if (room.room[i].sz == 0){
+				removeRoom(roomName);
+			}
+			
+			return 1;
+		}
+	}
+	return 0;
+}
+
+/*------------------------------------------------------*/
+void afficherRooms(){
+	int i = 0;
+	int j = 0;
+	printf("--------Affichage de toutes les rooms----------\n");
+	for (i = 0; i < room.sz; ++i){
+		printf("Room %d\n", i);
+		for (j = 0; j < room.room[i].sz; ++j){
+			printf("    |------Socket: %d\n", room.room[i].socks[j]);
+		}
+	}
+	printf("----------Fin affichage---------------\n");
+}
+
+/*------------------------------------------------------*/
 /* 1 -> envoi reussi */
 void * sendMessageToRoom(void* rMsg) {
 	int curr;
+	int curr2;
 	msgToRoomStruct* roomMsg = rMsg;
 	int i = room.sz;
 	for (curr = 0; curr < i; ++curr){
 		if (strcmp(room.room[curr].name, roomMsg -> roomName) == 0){
-			//bonne room
-			int curr2;
+			//bonne room			
 			for (curr2 =0; curr2 < room.room[curr].sz; ++curr2){
 				write(room.room[curr].socks[curr2], roomMsg -> msg, strlen(roomMsg -> msg)+1);
 			}
@@ -26,7 +91,7 @@ void * sendMessageToRoom(void* rMsg) {
 	}
 }
 
-
+/*------------------------------------------------------*/
 //Used to read the dictionnary and store it in an array
 void readWords(dictionnary* d) {
 	FILE *fp;
@@ -50,6 +115,7 @@ void readWords(dictionnary* d) {
 	fclose(fp);
 }
 
+/*------------------------------------------------------*/
 /* retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si erreur */
 int updateUserFile(sockaddr_in adresse) {
 	FILE* fichier = NULL;
@@ -93,6 +159,7 @@ int updateUserFile(sockaddr_in adresse) {
 	return -1;
 }
 
+/*------------------------------------------------------*/
 /* retourne 1 si l'incrementation est effectuée, -1 sinon */
 int incrementInsult(sockaddr_in adresse) {
 	FILE* fichier = NULL;
@@ -136,12 +203,16 @@ int incrementInsult(sockaddr_in adresse) {
 	return -1;	
 }
 
+/*------------------------------------------------------*/
 int addUser(users *u, int* sock) {
+
 	if (! u -> sz){
 		//salle existante mais vide
 		u -> sz = 1;
 		u -> socks[0] = *sock;
-		pthread_mutex_unlock(&mutexRoom);
+		currentSock = *sock;
+		write(*sock, "24", 3);
+		pthread_mutex_unlock(&mutexRoom);		
 		return 1;
 	} else {
 		if (u -> sz >= 10){
@@ -160,14 +231,18 @@ int addUser(users *u, int* sock) {
 				return 1;
 			}
 		}
+		//Ajout de l'utilisateur a la fin du tableau
 		u ->socks[u -> sz] = *sock;
+		//Incrémentation du nombre d'utilisateurs
 		u -> sz ++;
-		write(*sock, "25", 3);
+		//Envoi de la confirmation au client
+		write(*sock, "25", 2);
+		currentSock = *sock;
 		pthread_mutex_unlock(&mutexRoom);
 		return 1;
 	}
 }
-
+/*------------------------------------------------------*/
 /*
  *@brief Ajout d'utilisateur dans une room. Si la room existe pas on la crée
  *
@@ -175,38 +250,39 @@ int addUser(users *u, int* sock) {
 int addUserInRoom(int* sock, char* roomName){
 	pthread_mutex_lock(&mutexRoom);
 	int cpt;
-	if (!room.sz){
-		//aucune salle existe on la crée:
+	if (room.sz == 0){
+		//aucune salle existe on la crée:		
 		room.room[0].name = roomName;
 		room.sz = 1;	
 		//On ajoute l'utilisateur
 		//Salon crée
-		write(*sock, "24", 3);
-		return addUser(&(room.room[room.sz-1]), sock);
+		//Envoi de la confirmation au client		
+		return addUser(&(room.room[0]), sock);
 	}
 	
 	for (cpt = 0; cpt < room.sz; cpt++){
 		if (strcmp(room.room[cpt].name, roomName) == 0){
 			//La salle existe déjà
 			//On ajoute l'utilisateur dedans
-			return addUser(&(room.room[cpt]), sock);
-						
+			return addUser(&(room.room[cpt]), sock);						
 		}
 	}
 	
-		//La salle n'existe pas, on la crée:
-		if (room.sz >= 10){
-			pthread_mutex_unlock(&mutexRoom);
-			return 0;
-			
-		}
+	//On a atteint le maximum de room
+	if (room.sz >= 10){
+		pthread_mutex_unlock(&mutexRoom);
+		return 0;		
+	} else {
+		//Création d'une room au bout du tableau
 		room.room[room.sz].name = roomName;
+		//Augmentation du nombre de room
 		room.sz ++;	
 		//On ajoute l'utilisateur
-		pthread_mutex_unlock(&mutexRoom);
 		return addUser(&(room.room[room.sz-1]), sock);
+	}
 }
 
+/*------------------------------------------------------*/
 char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	char* messageBis;
 	int i = 0;
@@ -225,6 +301,7 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	return message;
 }
 
+/*------------------------------------------------------*/
 char* getServerResponse(char* commandLine){
 	char *response;
 	if (!strcmp(commandLine, "@exit\0")){
@@ -278,7 +355,11 @@ void *renvoi_message(void *arg){
 
 		//recuperation du nom de la room
 		memcpy(roomname, buffer, 14);
-		addUserInRoom(arg, roomname);
+		
+		if (*sock > currentSock){
+			addUserInRoom(arg, roomname);
+			afficherRooms();
+		}				
 		
 		//On enleve la room
 		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
@@ -288,18 +369,17 @@ void *renvoi_message(void *arg){
 		} else if (command == '1'){
 			//Commande utilisateur de type @command
 			//Recupération de la commande 
-			char *commandLine = malloc(6* sizeof(char));
+			char *commandLine = malloc(5* sizeof(char));
 			printf("buffer2: %s\n", buffer2);
 			//on prend les 5 dernier char
 			memcpy(commandLine, buffer2+strlen(buffer2)-5*sizeof(char), 5);
-			commandLine[6] = '\0';
+			//commandLine[6] = '\0';
 			char resp[2];
 			printf("commande: %s||\n", commandLine);
 			memcpy(resp, getServerResponse(commandLine), 2);
 			write(*sock, resp, 2);
+			free(commandLine);
 		}
-		
-		
 		
 		//Création du champs date
 		time(&seconds);
@@ -309,10 +389,7 @@ void *renvoi_message(void *arg){
 		snprintf(date, sizeof date, "[%d:%d:%d]", instant.tm_hour, instant.tm_min, instant.tm_sec); //Date 
 		snprintf(message, sizeof message, "%c%s %s \n", command, date, buffer2); // Command + Date + Message
 		analyseMessage(message, &dict, sock);
-		
-		int i = 0;
-		
-		
+						
 		//ecriture dans la room
 		pthread_t t;
 		msgToRoomStruct msgStr;
@@ -358,6 +435,7 @@ main(int argc, char **argv) {
     
     gethostname(machine,TAILLE_MAX_NOM);		/* recuperation du nom de la machine */
     readWords(&dict);
+    currentSock = 0;
     
     /* recuperation de la structure d'adresse en utilisant le nom */
     if ((ptr_hote = gethostbyname(machine)) == NULL) {
