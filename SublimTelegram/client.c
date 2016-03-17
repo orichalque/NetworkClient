@@ -2,6 +2,8 @@
 Client a lancer apres le serveur avec la commande :
 client <adresse-serveur> <pseudonyme>
 ------------------------------------------------------------*/
+//TODO Debuguer stop()
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <linux/types.h>
@@ -43,6 +45,7 @@ void stop(){
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
 		exit(1);
     }
+    
     close(socket_descriptor);
     pthread_cancel(t1);
     pthread_cancel(t2);
@@ -60,16 +63,15 @@ void *envoi_message(void* arg){
     strcpy(input,arg);
     if(input[0]=='@'){//commande utilisateur
     	strcpy(mesg,"1");
-		strcat(mesg, pseudoWithComaAndRoom);  
-		strcat(mesg, arg);
     }else{// message utilisateur
 		strcpy(mesg,"0");
-		strcat(mesg, pseudoWithComaAndRoom);  
-		strcat(mesg, arg);
 	}
-    mesg[strlen(mesg)-1]='\0';
+	strcat(mesg, pseudoWithComaAndRoom);  
+	strcat(mesg, arg);
+    mesg[strlen(mesg)]='\0';
     // envoi du message vers le serveur
-    if ((write(socket_descriptor, mesg, strlen(mesg))) < 0) {
+    printf("Message de longueur: %d\n", (int)strlen(mesg));
+    if ((write(socket_descriptor, mesg, strlen(mesg) )) < 0) {
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
 		stop();
     }
@@ -92,14 +94,17 @@ void *reception_message(void* arg){
 					printf("Le salon a ete ferme par l'administrateur\n");
 					printf("Deconnexion ...\n");
 					stop();
+					break;
 				}else if(buffer[1]=='1'){
 					printf("Le serveur a ete interrompue ferme\n");
 					printf("Deconnexion ...\n");
 					stop();
+					break;
 				}else if(buffer[1]=='2'){
 					printf("Vous etes expulse du serveur. Un peu de courtoisie. Merci !\n");
 					printf("Deconnexion ...\n");
-					stop();
+					exit(0);
+					break;
 				}else if(buffer[1]=='3'){
 					printf("le salon est plein. Revenez plus tard\n");
 					printf("Deconnexion ...\n");
@@ -178,7 +183,8 @@ int main(int argc, char **argv) {
     }
 
     printf("connexion etablie avec le serveur. \n");
-
+	strcat(mesg, "vient de rejoindre le salon");
+	pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg);
     //execution de stop() si l'utilisateur presse CTRL+C
     signal(SIGINT,stop);
     if (pthread_create(&t2, NULL, (void*(*)(void*))reception_message, NULL) == -1){

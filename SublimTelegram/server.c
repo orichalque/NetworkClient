@@ -8,8 +8,23 @@ dictionnary dict;
 int currentSock;
 pthread_mutex_t mutexUserFile;
 pthread_mutex_t mutexRoom;
-sockaddr_in ips[50];
+sockaddr_in ips[104]; //100 sockets, puisqu'on commence au socket 4
 pthread_t t1;
+
+/*-----------------------------------------------------*/
+//A éviter, complexité en O(nbRoom*Socket), c'est mauvais
+char* findRoomFromSocket(int sock){
+	int i, j;
+	for (i = 0; i < room.sz; ++i){
+		for (j = 0; j < room.room[i].sz; ++j){
+			if (room.room[i].socks[j] == sock){
+				return room.room[i].name;
+			}
+		}
+	}
+	char* nrf = "NoRoomFound";
+	return nrf;
+}
 
 /*-----------------------------------------------------*/
 int removeRoom(char* roomName){
@@ -29,7 +44,7 @@ int removeRoom(char* roomName){
 }
 
 /*------------------------------------------------------*/
-int removeSocketFromRoom(int* sock, char* roomName){
+int removeSocketFromRoom(int sock, char* roomName){
 	int i, j;
 	pthread_mutex_lock(&mutexRoom);
 	for (i = 0; i < room.sz; ++i){
@@ -38,7 +53,7 @@ int removeSocketFromRoom(int* sock, char* roomName){
 			j = 0;
 			
 			//On se rend a la cellule ou est lelement a retirer
-			while (room.room[i].socks[j] != *sock){
+			while (room.room[i].socks[j] != sock){
 				j++;
 			}
 			
@@ -66,7 +81,7 @@ void afficherRooms(){
 	int j = 0;
 	printf("--------Affichage de toutes les rooms----------\n");
 	for (i = 0; i < room.sz; ++i){
-		printf("Room %d\n", i);
+		printf("%s\n", room.room[i].name);
 		for (j = 0; j < room.room[i].sz; ++j){
 			printf("    |------Socket: %d\n", room.room[i].socks[j]);
 		}
@@ -183,9 +198,18 @@ int incrementInsult(sockaddr_in adresse) {
 	      		ipfile[8] = '\0';
 	      		if (strcmp(ipfile,ip)==0)
 	      		{//c'est l'utilisateur vulgaire
-				nbinsults = strtok(line,":");
-				nbinsults = strtok (NULL, ":");
-	      			fprintf(new, "%d:%ld\n", adresse.sin_addr.s_addr, strtol(nbinsults,NULL,10)+1);
+					nbinsults = strtok(line,":");
+					nbinsults = strtok (NULL, ":");
+			  		fprintf(new, "%d:%ld\n", adresse.sin_addr.s_addr, strtol(nbinsults,NULL,10)+1);
+			  		if (atoi(nbinsults) >= 15){
+			  			//kick user
+			  			int userCursor = 0;
+			  			while (ips[userCursor].sin_addr.s_addr != adresse.sin_addr.s_addr && userCursor < 104){
+			  				userCursor ++;			  				
+			  			}
+						write(userCursor, "22", 2);
+						removeSocketFromRoom(userCursor, findRoomFromSocket(userCursor));
+			  		}
 	      		}else
 			{// utilisateur normal
 				fprintf(new, "%s", line);
