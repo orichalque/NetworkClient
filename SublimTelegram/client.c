@@ -2,7 +2,6 @@
 Client a lancer apres le serveur avec la commande :
 client <adresse-serveur> <pseudonyme>
 ------------------------------------------------------------*/
-// TODO Debuguer stop()
 
 #include "client.h"
 sockaddr_in adresse_locale;
@@ -73,7 +72,7 @@ void *reception_message(void *arg) {
   	memset(buffer, ' ', strlen(buffer));
     if ((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
       if (buffer[0] == '0') { // Message utilisateur recu
-        write(1, buffer, longueur);
+        write(1, buffer+1, longueur);
       } else if (buffer[0] == '2') { // Message systeme recu
         printf("######-Message systeme-######\n");
         if (buffer[1] == '0') {
@@ -122,15 +121,18 @@ void *reception_message(void *arg) {
 /* ----------------------------------------------------------------- */
 int main(int argc, char **argv) {
   char mesg[512];
-  if (argc < 3) { // verification du nombre d'argument
-    perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> ");
+  if (argc < 4) { // verification du nombre d'argument
+    perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> <room> ");
+    exit(1);
+  }
+  if (argc > 4){
+  	perror("Trop d'arguments : ./client <adresse-serveur> <pseudonyme> <room> ");
     exit(1);
   }
 
   if (argc == 4) {
     if (strlen(argv[3]) > 14) {
       memcpy(salon, &argv[3][0], 14);
-      // printf("salon tronqué: %s", salon);
     } else {
       salon = argv[3];
       while (strlen(salon) < 14) {
