@@ -12,7 +12,12 @@ sockaddr_in ips[104]; //100 sockets, puisqu'on commence au socket 4
 pthread_t t1;
 
 /*-----------------------------------------------------*/
-//A éviter, complexité en O(nbRoom*Socket), c'est mauvais
+/**
+ * @function findRoomFromSocket
+ * @param sock le socket a chercher
+ * @return char* room, la room où se trouve le socket
+ * @brief Parcourt chaque room à la recherche du socket, et renvoie la room qui correspond
+ */
 char* findRoomFromSocket(int sock){
 	int i, j;
 	for (i = 0; i < room.sz; ++i){
@@ -27,6 +32,12 @@ char* findRoomFromSocket(int sock){
 }
 
 /*-----------------------------------------------------*/
+/**
+ * @function removeRoom
+ * @param roomName le nom de la room a supprimer
+ * @return 1 si la suppression est reussie, 0 sinon
+ * @brief Retire la room désirée, et décalle toutes les autres dans la structure
+ */
 int removeRoom(char* roomName){
 	int i, j;
 	while (i < room.sz && (strcmp(room.room[i].name, roomName) != 0)){		
@@ -44,6 +55,13 @@ int removeRoom(char* roomName){
 }
 
 /*------------------------------------------------------*/
+/**
+ * @function removeSocketFromRoom
+ * @param sock le socket a supprimer
+ * @param roomName la room ou se trouve le socket
+ * @return 1 si suppression reussie, 0 sinon.
+ * @brief Supprime le socket d'une room et decalle tous les autres
+ */
 int removeSocketFromRoom(int sock, char* roomName){
 	int i, j;
 	pthread_mutex_lock(&mutexRoom);
@@ -76,6 +94,11 @@ int removeSocketFromRoom(int sock, char* roomName){
 }
 
 /*------------------------------------------------------*/
+/**
+ * @function afficherRooms
+ * @return void
+ * @brief affiche toutes les rooms et leur socket, coté serveur.
+ */
 void afficherRooms(){
 	int i = 0;
 	int j = 0;
@@ -91,6 +114,12 @@ void afficherRooms(){
 
 /*------------------------------------------------------*/
 /* 1 -> envoi reussi */
+/**
+ * @function sendMessageToRoom
+ * @param rMsg le message a envoyer
+ * @return void
+ * @brief Fonction threadee d'envoi de message a tous les sockets d'une room
+ */
 void * sendMessageToRoom(void* rMsg) {
 	int curr;
 	int curr2;
@@ -107,7 +136,12 @@ void * sendMessageToRoom(void* rMsg) {
 }
 
 /*------------------------------------------------------*/
-//Used to read the dictionnary and store it in an array
+/**
+ * @function readWords
+ * @param d le dictionnaire a remplir
+ * @return void
+ * @brief Ouvre le fichier de mots et lit chaque ligne pour les stocker dans le dictionnaire
+ */
 void readWords(dictionnary* d) {
 	FILE *fp;
 	fp = fopen("dictionnaire","r"); // read mode
@@ -132,6 +166,12 @@ void readWords(dictionnary* d) {
 
 /*------------------------------------------------------*/
 /* retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si erreur */
+/**
+ * @function updateUserFile
+ * @param adresse l'ip du client
+ * @return  retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si erreur 
+ * @brief vérifie la présence d'un utilisateur dans le fichier client
+ */
 int updateUserFile(sockaddr_in adresse) {
 	FILE* fichier = NULL;
 	fichier = fopen("users.txt", "r"); // en lecture pour rechercher l'adresse du client
@@ -176,6 +216,12 @@ int updateUserFile(sockaddr_in adresse) {
 
 /*------------------------------------------------------*/
 /* retourne 1 si l'incrementation est effectuée, -1 sinon */
+/**
+ * @function incrementInsult
+ * @param adresse l'ip du client
+ * @return 1 si l'incrementation est effectuée, -1 sinon
+ * @brief incremente le nombre d'insultes d'un client, et le kick si supérieur à 15 a chaque mesage
+ */
 int incrementInsult(sockaddr_in adresse) {
 	FILE* fichier = NULL;
 	FILE* new = NULL;
@@ -228,6 +274,13 @@ int incrementInsult(sockaddr_in adresse) {
 }
 
 /*------------------------------------------------------*/
+/**
+ * @function addUser
+ * @param u le salon
+ * @param sock le socket
+ * @return 1 si ajout reussi, 0 sinon
+ * @brief Ajoute un utilisateur dans la room en parametre
+ */
 int addUser(users *u, int* sock) {
 
 	if (! u -> sz){
@@ -267,9 +320,12 @@ int addUser(users *u, int* sock) {
 	}
 }
 /*------------------------------------------------------*/
-/*
- *@brief Ajout d'utilisateur dans une room. Si la room existe pas on la crée
- *
+/**
+ * @function addUserInRoom
+ * @param sock le socket
+ * @param roomName le nom de la room
+ * @return 1 si ajout reussi, 0 sinon
+ * @brief Crée la room, ou la retrouve, puis appelle addUser pour ajouter l'utilisateur dedans
  */
 int addUserInRoom(int* sock, char* roomName){
 	pthread_mutex_lock(&mutexRoom);
@@ -307,6 +363,14 @@ int addUserInRoom(int* sock, char* roomName){
 }
 
 /*------------------------------------------------------*/
+/**
+ * @function analyseMEssage
+ * @param message le message a analyser
+ * @param d le dictionnaire de mots
+ * @param sock le socket du message envoyé
+ * @return le message
+ * @brief analyse le message, et incrémente le nombre d'insulte s'il y en a une
+ */
 char* analyseMessage(char* message, dictionnary *d, int* sock) {
 	char* messageBis;
 	int i = 0;
@@ -326,6 +390,12 @@ char* analyseMessage(char* message, dictionnary *d, int* sock) {
 }
 
 /*------------------------------------------------------*/
+/**
+ * @function getServerResponse
+ * @param commandLine la commande utilisateur entrée par le client
+ * @return la reponse du serveur qui correspond
+ * @brief analyse la commande du client pour agir en fonction
+ */
 char* getServerResponse(char* commandLine){
 	char *response;
 	if (!strcmp(commandLine, "@exit\0")){
@@ -347,6 +417,12 @@ char* getServerResponse(char* commandLine){
 }
 /*------------------------------------------------------*/
 
+/**
+ * @function renvoi_message
+ * @param arg le message envoyé par le client
+ * @return void
+ * @brief Boucle de reception et envoi du message a la room
+ */
 void *renvoi_message(void *arg){
     int *s = arg;
     int *sock;
@@ -434,6 +510,11 @@ void *renvoi_message(void *arg){
 }
 
 /*------------------------------------------------------*/
+/**
+ * @function stop
+ * @return void
+ * @brief Ferme le server après avoir fermé toutes les room
+ */
 void stop() {
 
 	int curr;
@@ -451,6 +532,12 @@ void stop() {
 }
 
 /*------------------------------------------------------*/
+/**
+ * @brief main, ouvre le serveur et se met en attente de connexions
+ * @param argc 
+ * @param argv
+ * @return 1 si echec, 0 sinon
+ */
 main(int argc, char **argv) {
   	
     int 		socket_descriptor, 		/* descripteur de socket */

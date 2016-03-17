@@ -50,14 +50,24 @@ typedef struct {
     char* msg;
 }msgToRoomStruct ;
 
+char *findRoomFromSocket(int sock);
+int removeRoom(char* roomName);
+int removeSocketFromRoom(int sock, char* roomName);
+
+void readWords(dictionnary* d) ;
+int incrementInsult(sockaddr_in adresse);
+
+int updateUserFile(sockaddr_in adresse);
+int addUser(users *u, int* sock);
+int addUserInRoom(int* sock, char* roomName);
+void afficherRooms();
+
+char *analyseMessage(char* message, dictionnary *d, int* sock);
+char *getServerResponse(char* commandLine);
+void *renvoi_message(void *arg);
+void *sendMessageToRoom(void* rMsg);
 
 void stop();
-int addUser(users *u, int* sock);
-void *thread_1(void *arg);
-void *renvoi_message(void *arg);
-void readWords(dictionnary* d);
-char* analyseMessage(char* message, dictionnary *d, int* sock);
-void * sendMessageToRoom(void* roomMsg);
 #ifdef	__cplusplus
 }
 #endif
