@@ -350,8 +350,7 @@ void *renvoi_message(void *arg){
     struct tm instant;
 
     //boucle de communication avec un client
-    while(1){
-    	printf("while du socket :%d\n", *sock); 
+    while(1){ 
     	char date[11];
     	char message[491];
     	char roomname[14];
@@ -380,7 +379,6 @@ void *renvoi_message(void *arg){
 			addUserInRoom(arg, roomname);
 			afficherRooms();
 		}				
-		
 		//On enleve la room
 		memcpy(buffer2, buffer+14, strlen(buffer+14)+1);
 		if (command == '0'){
@@ -389,16 +387,14 @@ void *renvoi_message(void *arg){
 		} else if (command == '1'){
 			//Commande utilisateur de type @command
 			//Recupération de la commande 
-			char *commandLine = malloc(5* sizeof(char));
-			printf("buffer2: %s\n", buffer2);
+			char *commandLine = malloc(6* sizeof(char));
 			//on prend les 5 dernier char
-			memcpy(commandLine, buffer2+strlen(buffer2)-5*sizeof(char), 5);
-			//commandLine[6] = '\0';
+			commandLine = strchr(buffer2, '@');
+			commandLine[5] = '\0';
 			char resp[2];
 			printf("commande: %s||\n", commandLine);
 			memcpy(resp, getServerResponse(commandLine), 2);
 			write(*sock, resp, 2);
-			free(commandLine);
 		}
 		
 		//Création du champs date
