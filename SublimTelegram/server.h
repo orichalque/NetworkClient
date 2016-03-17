@@ -169,13 +169,6 @@ void *sendMessageToRoom(void *rMsg);
  */
 void stop();
 
-/**
- * @brief main, ouvre le serveur et se met en attente de connexions
- * @param argc
- * @param argv
- * @return 1 si echec, 0 sinon
- */
-main(int argc, char **argv);
 #ifdef __cplusplus
 }
 #endif

@@ -70,6 +70,7 @@ void *reception_message(void *arg) {
 
   // lecture de la reponse en provenance du serveur
   while (1) {
+  	memset(buffer, ' ', strlen(buffer));
     if ((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
       if (buffer[0] == '0') { // Message utilisateur recu
         write(1, buffer, longueur);
@@ -99,11 +100,19 @@ void *reception_message(void *arg) {
           printf("Vous venez de creer un salon.\n");
         } else if (buffer[1] == '5') {
           printf("Vous venez de rejoindre un salon.\n");
+        } else if (buffer[1] == '6') {
+          printf("Les commandes disponibles:");
+          printf("%s\n",strchr(buffer, ':')+1);
+        } else if (buffer[1] == '7') {
+          printf("dernier socket:\n");
+          printf("%s\n",strchr(buffer, ':')+1);
+        } else if (buffer[1] == '8') {
+          printf("Vous venez d'expulser un utilisateur.\n");
+        } else if (buffer[1] == '9') {
+          printf("Vous ne pouvez que kick le dernier utilisateur.\n");
         } else {
           printf("message systeme inconnu.\n");
         }
-      } else {
-        printf("Message incoherent\n");
       }
     }
   }

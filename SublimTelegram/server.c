@@ -317,17 +317,27 @@ char *analyseMessage(char *message, dictionnary *d, int *sock) {
 /*------------------------------------------------------*/
 char *getServerResponse(char *commandLine) {
   char *response;
+  response = malloc(32*sizeof(char));
   if (!strcmp(commandLine, "@exit\0")) {
-    response = "20";
-    printf("@exit\n");
+    strcpy(response,"20");
   } else if (!strcmp(commandLine, "@kick\0")) {
-    response = "22";
+  if(!strcmp(findRoomFromSocket(currentSock),"NoRoomFound")){
+	strcpy(response,"29");
+  }else{
+  	strcpy(response,"28");
+	write(currentSock, "22", 2);
+	removeSocketFromRoom(currentSock, findRoomFromSocket(currentSock));
+  }
   } else if (!strcmp(commandLine, "@help\0")) {
-    response = "26";
+    strcpy(response,"26:\n@exit\n@help\n@sock\0");
   } else if (!strcmp(commandLine, "@sock\0")) {
-    response = "27";
+    strcpy(response,"27:");
+    char *s;
+    s = malloc(2*sizeof(char));
+    sprintf(s, "%d", currentSock);
+    strcat(response,s);
   } else {
-    response = "28";
+    strcpy(response,"29");
   }
   return response;
 }
@@ -384,10 +394,10 @@ void *renvoi_message(void *arg) {
       // on prend les 5 dernier char
       commandLine = strchr(buffer2, '@');
       commandLine[5] = '\0';
-      char resp[2];
+      char resp[32];
       printf("commande: %s||\n", commandLine);
-      memcpy(resp, getServerResponse(commandLine), 2);
-      write(*sock, resp, 2);
+      strcpy(resp, getServerResponse(commandLine));
+      write(*sock, resp, strlen(resp));
     }
 
     // Création du champs date
