@@ -317,27 +317,27 @@ char *analyseMessage(char *message, dictionnary *d, int *sock) {
 /*------------------------------------------------------*/
 char *getServerResponse(char *commandLine) {
   char *response;
-  response = malloc(32*sizeof(char));
+  response = malloc(32 * sizeof(char));
   if (!strcmp(commandLine, "@exit\0")) {
-    strcpy(response,"20");
+    strcpy(response, "20");
   } else if (!strcmp(commandLine, "@kick\0")) {
-  if(!strcmp(findRoomFromSocket(currentSock),"NoRoomFound")){
-	strcpy(response,"29");
-  }else{
-  	strcpy(response,"28");
-	write(currentSock, "22", 2);
-	removeSocketFromRoom(currentSock, findRoomFromSocket(currentSock));
-  }
+    if (!strcmp(findRoomFromSocket(currentSock), "NoRoomFound")) {
+      strcpy(response, "29");
+    } else {
+      strcpy(response, "28");
+      write(currentSock, "22", 2);
+      removeSocketFromRoom(currentSock, findRoomFromSocket(currentSock));
+    }
   } else if (!strcmp(commandLine, "@help\0")) {
-    strcpy(response,"26:\n@exit\n@help\n@sock\0");
+    strcpy(response, "26:\n@exit\n@help\n@sock\0");
   } else if (!strcmp(commandLine, "@sock\0")) {
-    strcpy(response,"27:");
+    strcpy(response, "27:");
     char *s;
-    s = malloc(2*sizeof(char));
+    s = malloc(2 * sizeof(char));
     sprintf(s, "%d", currentSock);
-    strcat(response,s);
+    strcat(response, s);
   } else {
-    strcpy(response,"29");
+    strcpy(response, "29");
   }
   return response;
 }

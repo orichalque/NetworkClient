@@ -69,10 +69,10 @@ void *reception_message(void *arg) {
 
   // lecture de la reponse en provenance du serveur
   while (1) {
-  	memset(buffer, ' ', strlen(buffer));
+    memset(buffer, ' ', strlen(buffer));
     if ((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
       if (buffer[0] == '0') { // Message utilisateur recu
-        write(1, buffer+1, longueur);
+        write(1, buffer + 1, longueur);
       } else if (buffer[0] == '2') { // Message systeme recu
         printf("######-Message systeme-######\n");
         if (buffer[1] == '0') {
@@ -101,10 +101,10 @@ void *reception_message(void *arg) {
           printf("Vous venez de rejoindre un salon.\n");
         } else if (buffer[1] == '6') {
           printf("Les commandes disponibles:");
-          printf("%s\n",strchr(buffer, ':')+1);
+          printf("%s\n", strchr(buffer, ':') + 1);
         } else if (buffer[1] == '7') {
           printf("dernier socket:\n");
-          printf("%s\n",strchr(buffer, ':')+1);
+          printf("%s\n", strchr(buffer, ':') + 1);
         } else if (buffer[1] == '8') {
           printf("Vous venez d'expulser un utilisateur.\n");
         } else if (buffer[1] == '9') {
@@ -122,11 +122,13 @@ void *reception_message(void *arg) {
 int main(int argc, char **argv) {
   char mesg[512];
   if (argc < 4) { // verification du nombre d'argument
-    perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> <room> ");
+    perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> "
+           "<room> ");
     exit(1);
   }
-  if (argc > 4){
-  	perror("Trop d'arguments : ./client <adresse-serveur> <pseudonyme> <room> ");
+  if (argc > 4) {
+    perror(
+        "Trop d'arguments : ./client <adresse-serveur> <pseudonyme> <room> ");
     exit(1);
   }
 
