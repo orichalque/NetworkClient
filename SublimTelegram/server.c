@@ -370,7 +370,7 @@ void *renvoi_message(void *arg) {
 
     /* Création de la trame */
 
-    printf("---%s\n", buffer);
+    printf("######Id##Room#######Pseudo##Message ####\n ----> %s\n", buffer);
     // Récupération du type de message
     command = buffer[0];
     // Traitement du message;
@@ -395,7 +395,7 @@ void *renvoi_message(void *arg) {
       commandLine = strchr(buffer2, '@');
       commandLine[5] = '\0';
       char resp[32];
-      printf("commande: %s||\n", commandLine);
+      printf("commande reçue: %s\n", commandLine);
       strcpy(resp, getServerResponse(commandLine));
       write(*sock, resp, strlen(resp));
     }
