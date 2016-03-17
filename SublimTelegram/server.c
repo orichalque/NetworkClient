@@ -348,7 +348,11 @@ char* getServerResponse(char* commandLine){
 /*------------------------------------------------------*/
 
 void *renvoi_message(void *arg){
-    int * sock = arg;
+    int *s = arg;
+    int *sock;
+    sock = malloc(sizeof(int));
+    *sock = *s;
+    
     // Récupérer les 12 premiers caractères de la trame --> room
 	
     time_t seconds;
@@ -356,6 +360,7 @@ void *renvoi_message(void *arg){
 
     //boucle de communication avec un client
     while(1){
+    	printf("while du socket :%d\n", *sock); 
     	char date[11];
     	char message[491];
     	char roomname[14];

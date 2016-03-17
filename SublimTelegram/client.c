@@ -85,7 +85,7 @@ void *reception_message(void* arg){
 
     // lecture de la reponse en provenance du serveur
     while(1){
-		while((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
+		if((longueur = read(socket_descriptor, buffer, sizeof(buffer))) > 0) {
 			if (buffer[0]=='0'){//Message utilisateur recu
 				write(1,buffer,longueur);
 			}else if(buffer[0]=='2'){//Message systeme recu
@@ -124,7 +124,7 @@ void *reception_message(void* arg){
     pthread_exit(NULL);
 }
 
-int main(int argc, char **argv) {	
+int main(int argc, char **argv) {
     char mesg[512];
     if (argc < 3) { // verification du nombre d'argument
 		perror("Pas assez d'arguments : ./client <adresse-serveur> <pseudonyme> ");
