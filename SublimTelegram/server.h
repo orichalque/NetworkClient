@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   server.h
  * Author: E104607D
  *
@@ -6,18 +6,18 @@
  */
 
 #ifndef SERVER_H
-#define	SERVER_H
+#define SERVER_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <linux/types.h> 	/* pour les sockets */
-#include <sys/socket.h>
-#include <netdb.h> 		/* pour hostent, servent */
-#include <string.h> 		/* pour bcopy, ... */  
-#include <pthread.h> //threads
+#include <linux/types.h> /* pour les sockets */
+#include <netdb.h>       /* pour hostent, servent */
+#include <pthread.h>     //threads
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h> /* pour bcopy, ... */
+#include <sys/socket.h>
+#include <time.h>
 #include <unistd.h>
-#include <time.h> 
 #define TAILLE_MAX_NOM 256
 
 typedef struct sockaddr sockaddr;
@@ -25,36 +25,36 @@ typedef struct sockaddr_in sockaddr_in;
 typedef struct hostent hostent;
 typedef struct servent servent;
 
-//Room struct containing users and a name
-typedef struct{
-	char* name;
-	int sz;
-	int socks[10];
+// Room struct containing users and a name
+typedef struct {
+  char *name;
+  int sz;
+  int socks[10];
 } users;
 
-//struct containing rooms of users
-typedef struct{
-	int sz;
-	users room[10];
+// struct containing rooms of users
+typedef struct {
+  int sz;
+  users room[10];
 } rooms;
 
-//Dictionnary of 50 words of size 16chars
-typedef struct{
-	int sz;
-	char words[50][19];
+// Dictionnary of 50 words of size 16chars
+typedef struct {
+  int sz;
+  char words[50][19];
 } dictionnary;
 
-
 typedef struct {
-    char* roomName;
-    char* msg;
-}msgToRoomStruct ;
+  char *roomName;
+  char *msg;
+} msgToRoomStruct;
 
 /**
  * @function findRoomFromSocket
  * @param sock le socket a chercher
  * @return char* room, la room où se trouve le socket
- * @brief Parcourt chaque room à la recherche du socket, et renvoie la room qui correspond
+ * @brief Parcourt chaque room à la recherche du socket, et renvoie la room qui
+ * correspond
  */
 char *findRoomFromSocket(int sock);
 
@@ -64,7 +64,7 @@ char *findRoomFromSocket(int sock);
  * @return 1 si la suppression est reussie, 0 sinon
  * @brief Retire la room désirée, et décalle toutes les autres dans la structure
  */
-int removeRoom(char* roomName);
+int removeRoom(char *roomName);
 
 /**
  * @function removeSocketFromRoom
@@ -73,28 +73,31 @@ int removeRoom(char* roomName);
  * @return 1 si suppression reussie, 0 sinon.
  * @brief Supprime le socket d'une room et decalle tous les autres
  */
-int removeSocketFromRoom(int sock, char* roomName);
+int removeSocketFromRoom(int sock, char *roomName);
 
 /**
  * @function readWords
  * @param d le dictionnaire a remplir
  * @return void
- * @brief Ouvre le fichier de mots et lit chaque ligne pour les stocker dans le dictionnaire
+ * @brief Ouvre le fichier de mots et lit chaque ligne pour les stocker dans le
+ * dictionnaire
  */
-void readWords(dictionnary* d) ;
+void readWords(dictionnary *d);
 
 /**
  * @function incrementInsult
  * @param adresse l'ip du client
  * @return 1 si l'incrementation est effectuée, -1 sinon
- * @brief incremente le nombre d'insultes d'un client, et le kick si supérieur à 15 a chaque mesage
+ * @brief incremente le nombre d'insultes d'un client, et le kick si supérieur à
+ * 15 a chaque mesage
  */
 int incrementInsult(sockaddr_in adresse);
 
 /**
  * @function updateUserFile
  * @param adresse l'ip du client
- * @return  retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si erreur 
+ * @return  retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si
+ * erreur
  * @brief vérifie la présence d'un utilisateur dans le fichier client
  */
 int updateUserFile(sockaddr_in adresse);
@@ -106,16 +109,17 @@ int updateUserFile(sockaddr_in adresse);
  * @return 1 si ajout reussi, 0 sinon
  * @brief Ajoute un utilisateur dans la room en parametre
  */
-int addUser(users *u, int* sock);
+int addUser(users *u, int *sock);
 
 /**
  * @function addUserInRoom
  * @param sock le socket
  * @param roomName le nom de la room
  * @return 1 si ajout reussi, 0 sinon
- * @brief Crée la room, ou la retrouve, puis appelle addUser pour ajouter l'utilisateur dedans
+ * @brief Crée la room, ou la retrouve, puis appelle addUser pour ajouter
+ * l'utilisateur dedans
  */
-int addUserInRoom(int* sock, char* roomName);
+int addUserInRoom(int *sock, char *roomName);
 
 /**
  * @function afficherRooms
@@ -132,7 +136,7 @@ void afficherRooms();
  * @return le message
  * @brief analyse le message, et incrémente le nombre d'insulte s'il y en a une
  */
-char *analyseMessage(char* message, dictionnary *d, int* sock);
+char *analyseMessage(char *message, dictionnary *d, int *sock);
 
 /**
  * @function getServerResponse
@@ -140,7 +144,7 @@ char *analyseMessage(char* message, dictionnary *d, int* sock);
  * @return la reponse du serveur qui correspond
  * @brief analyse la commande du client pour agir en fonction
  */
-char *getServerResponse(char* commandLine);
+char *getServerResponse(char *commandLine);
 
 /**
  * @function renvoi_message
@@ -156,7 +160,7 @@ void *renvoi_message(void *arg);
  * @return void
  * @brief Fonction threadee d'envoi de message a tous les sockets d'une room
  */
-void *sendMessageToRoom(void* rMsg);
+void *sendMessageToRoom(void *rMsg);
 
 /**
  * @function stop
@@ -167,14 +171,13 @@ void stop();
 
 /**
  * @brief main, ouvre le serveur et se met en attente de connexions
- * @param argc 
+ * @param argc
  * @param argv
  * @return 1 si echec, 0 sinon
  */
 main(int argc, char **argv);
-#ifdef	__cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#endif	/* SERVER_H */
-
+#endif /* SERVER_H */

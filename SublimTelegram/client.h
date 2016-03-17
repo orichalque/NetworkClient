@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   client.h
  * Author: E104607D
  *
@@ -6,26 +6,26 @@
  */
 
 #ifndef CLIENT_H
-#define	CLIENT_H
+#define CLIENT_H
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <linux/types.h>
-#include <sys/socket.h>
 #include <netdb.h>
-#include <string.h>
 #include <pthread.h>
 #include <signal.h>
-    
-//Structures sockets
-typedef struct sockaddr 	sockaddr;
-typedef struct sockaddr_in 	sockaddr_in;
-typedef struct hostent 		hostent;
-typedef struct servent 		servent;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+
+// Structures sockets
+typedef struct sockaddr sockaddr;
+typedef struct sockaddr_in sockaddr_in;
+typedef struct hostent hostent;
+typedef struct servent servent;
 
 /**
  * @function stop()
@@ -38,21 +38,23 @@ void stop();
  * @function envoi_message
  * @param arg, message ecrit par le client
  * @return void
- * @brief Fonction threadée d'envoi de message, se ferme une fois le message envoyé
+ * @brief Fonction threadée d'envoi de message, se ferme une fois le message
+ * envoyé
  */
-void *envoi_message(void* arg);
+void *envoi_message(void *arg);
 
 /**
  * @function reception_message
  * @param arg le message reçu par le client
  * @return void
  * @brief Boucle de reception, traitement et affichage du message.
- * Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client
+ * Thread unique contenant une boucle infinie. s'arrête a la deconnexion du
+ * client
  */
-void *reception_message(void* arg);
+void *reception_message(void *arg);
 
 /**
- * @function main 
+ * @function main
  * @param argc
  * @param argv
  * @return 1 en cas d'echec, 0 sinon
@@ -60,9 +62,8 @@ void *reception_message(void* arg);
  */
 int main(int argc, char **argv);
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#endif	/* CLIENT_H */
-
+#endif /* CLIENT_H */
