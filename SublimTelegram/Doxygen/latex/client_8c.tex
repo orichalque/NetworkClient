@@ -1,0 +1,157 @@
+\hypertarget{client_8c}{\section{client.\+c File Reference}
+\label{client_8c}\index{client.\+c@{client.\+c}}
+}
+{\ttfamily \#include \char`\"{}client.\+h\char`\"{}}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{client_8c_a8c528baf37154d347366083f0f816846}{stop} ()
+\begin{DoxyCompactList}\small\item\em Fonction d'arrêt du client, ferme le socket et les threads. \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{client_8c_a4e322b445adbb5f5cfc113cc13c1fddb}{envoi\+\_\+message} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Fonction threadée d'envoi de message, se ferme une fois le message envoyé \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{client_8c_a69fbe0865292b0a51b6f1f34e24c48c1}{reception\+\_\+message} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Boucle de reception, traitement et affichage du message. Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client. \end{DoxyCompactList}\item 
+int \hyperlink{client_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em fonction main, se connecte au serveur et recupere les entrées client \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{client_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in} \hyperlink{client_8c_af69049b94b2f9affb6285f35ebbbfce4}{adresse\+\_\+locale}
+\item 
+\hyperlink{client_8h_a1d441ee500486e39b27329c91ca436e0}{hostent} $\ast$ \hyperlink{client_8c_a44def98a6f87222ba91a152de6fe3c4d}{ptr\+\_\+host}
+\item 
+\hyperlink{client_8h_a4dca506e8bd2a243460e22c092c5f2cb}{servent} $\ast$ \hyperlink{client_8c_aa0f456584a97c1f855a20523abe402fb}{ptr\+\_\+service}
+\item 
+pthread\+\_\+t \hyperlink{client_8c_a4691718dcb34a3c3134daf1391da0636}{t1}
+\item 
+pthread\+\_\+t \hyperlink{client_8c_a987b292bd3afdfea26c1bab50df42891}{t2}
+\item 
+int \hyperlink{client_8c_a0103762912774edceb87d33c36a5c9fa}{socket\+\_\+descriptor}
+\item 
+char $\ast$ \hyperlink{client_8c_a1c2046dcb30a629d6d9f45ff8f403f12}{host}
+\item 
+char $\ast$ \hyperlink{client_8c_aa2f400385a61d54bb9c32f4d706ad0ce}{pseudo}
+\item 
+char $\ast$ \hyperlink{client_8c_af18f329d1177a0d62d10e09b06fbb807}{salon}
+\item 
+char \hyperlink{client_8c_a7e0db5bcb9bf96bea29fb522060137b5}{pseudo\+With\+Coma} \mbox{[}14\mbox{]}
+\item 
+char \hyperlink{client_8c_ae9660019ec1c5d81b24c28f28a9b551a}{pseudo\+With\+Coma\+And\+Room} \mbox{[}26\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{client_8c_a4e322b445adbb5f5cfc113cc13c1fddb}{\index{client.\+c@{client.\+c}!envoi\+\_\+message@{envoi\+\_\+message}}
+\index{envoi\+\_\+message@{envoi\+\_\+message}!client.\+c@{client.\+c}}
+\subsubsection[{envoi\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ envoi\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{client_8c_a4e322b445adbb5f5cfc113cc13c1fddb}
+
+
+Fonction threadée d'envoi de message, se ferme une fois le message envoyé 
+
+envoi\+\_\+message 
+\begin{DoxyParams}{Parameters}
+{\em arg,message} & ecrit par le client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{client_8c_a3c04138a5bfe5d72780bb7e82a18e627}{\index{client.\+c@{client.\+c}!main@{main}}
+\index{main@{main}!client.\+c@{client.\+c}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{client_8c_a3c04138a5bfe5d72780bb7e82a18e627}
+
+
+fonction main, se connecte au serveur et recupere les entrées client 
+
+main, ouvre le serveur et se met en attente de connexions
+
+main 
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 en cas d'echec, 0 sinon 
+\end{DoxyReturn}
+\hypertarget{client_8c_a69fbe0865292b0a51b6f1f34e24c48c1}{\index{client.\+c@{client.\+c}!reception\+\_\+message@{reception\+\_\+message}}
+\index{reception\+\_\+message@{reception\+\_\+message}!client.\+c@{client.\+c}}
+\subsubsection[{reception\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ reception\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{client_8c_a69fbe0865292b0a51b6f1f34e24c48c1}
+
+
+Boucle de reception, traitement et affichage du message. Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client. 
+
+reception\+\_\+message 
+\begin{DoxyParams}{Parameters}
+{\em arg} & le message reçu par le client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{client_8c_a8c528baf37154d347366083f0f816846}{\index{client.\+c@{client.\+c}!stop@{stop}}
+\index{stop@{stop}!client.\+c@{client.\+c}}
+\subsubsection[{stop}]{\setlength{\rightskip}{0pt plus 5cm}void stop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{client_8c_a8c528baf37154d347366083f0f816846}
+
+
+Fonction d'arrêt du client, ferme le socket et les threads. 
+
+Ferme le server après avoir fermé toutes les room.
+
+\hyperlink{server_8h_a8c528baf37154d347366083f0f816846}{stop()} \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+\subsection{Variable Documentation}
+\hypertarget{client_8c_af69049b94b2f9affb6285f35ebbbfce4}{\index{client.\+c@{client.\+c}!adresse\+\_\+locale@{adresse\+\_\+locale}}
+\index{adresse\+\_\+locale@{adresse\+\_\+locale}!client.\+c@{client.\+c}}
+\subsubsection[{adresse\+\_\+locale}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sockaddr\+\_\+in} adresse\+\_\+locale}}\label{client_8c_af69049b94b2f9affb6285f35ebbbfce4}
+\hypertarget{client_8c_a1c2046dcb30a629d6d9f45ff8f403f12}{\index{client.\+c@{client.\+c}!host@{host}}
+\index{host@{host}!client.\+c@{client.\+c}}
+\subsubsection[{host}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ host}}\label{client_8c_a1c2046dcb30a629d6d9f45ff8f403f12}
+\hypertarget{client_8c_aa2f400385a61d54bb9c32f4d706ad0ce}{\index{client.\+c@{client.\+c}!pseudo@{pseudo}}
+\index{pseudo@{pseudo}!client.\+c@{client.\+c}}
+\subsubsection[{pseudo}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ pseudo}}\label{client_8c_aa2f400385a61d54bb9c32f4d706ad0ce}
+\hypertarget{client_8c_a7e0db5bcb9bf96bea29fb522060137b5}{\index{client.\+c@{client.\+c}!pseudo\+With\+Coma@{pseudo\+With\+Coma}}
+\index{pseudo\+With\+Coma@{pseudo\+With\+Coma}!client.\+c@{client.\+c}}
+\subsubsection[{pseudo\+With\+Coma}]{\setlength{\rightskip}{0pt plus 5cm}char pseudo\+With\+Coma\mbox{[}14\mbox{]}}}\label{client_8c_a7e0db5bcb9bf96bea29fb522060137b5}
+\hypertarget{client_8c_ae9660019ec1c5d81b24c28f28a9b551a}{\index{client.\+c@{client.\+c}!pseudo\+With\+Coma\+And\+Room@{pseudo\+With\+Coma\+And\+Room}}
+\index{pseudo\+With\+Coma\+And\+Room@{pseudo\+With\+Coma\+And\+Room}!client.\+c@{client.\+c}}
+\subsubsection[{pseudo\+With\+Coma\+And\+Room}]{\setlength{\rightskip}{0pt plus 5cm}char pseudo\+With\+Coma\+And\+Room\mbox{[}26\mbox{]}}}\label{client_8c_ae9660019ec1c5d81b24c28f28a9b551a}
+\hypertarget{client_8c_a44def98a6f87222ba91a152de6fe3c4d}{\index{client.\+c@{client.\+c}!ptr\+\_\+host@{ptr\+\_\+host}}
+\index{ptr\+\_\+host@{ptr\+\_\+host}!client.\+c@{client.\+c}}
+\subsubsection[{ptr\+\_\+host}]{\setlength{\rightskip}{0pt plus 5cm}{\bf hostent}$\ast$ ptr\+\_\+host}}\label{client_8c_a44def98a6f87222ba91a152de6fe3c4d}
+\hypertarget{client_8c_aa0f456584a97c1f855a20523abe402fb}{\index{client.\+c@{client.\+c}!ptr\+\_\+service@{ptr\+\_\+service}}
+\index{ptr\+\_\+service@{ptr\+\_\+service}!client.\+c@{client.\+c}}
+\subsubsection[{ptr\+\_\+service}]{\setlength{\rightskip}{0pt plus 5cm}{\bf servent}$\ast$ ptr\+\_\+service}}\label{client_8c_aa0f456584a97c1f855a20523abe402fb}
+\hypertarget{client_8c_af18f329d1177a0d62d10e09b06fbb807}{\index{client.\+c@{client.\+c}!salon@{salon}}
+\index{salon@{salon}!client.\+c@{client.\+c}}
+\subsubsection[{salon}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ salon}}\label{client_8c_af18f329d1177a0d62d10e09b06fbb807}
+\hypertarget{client_8c_a0103762912774edceb87d33c36a5c9fa}{\index{client.\+c@{client.\+c}!socket\+\_\+descriptor@{socket\+\_\+descriptor}}
+\index{socket\+\_\+descriptor@{socket\+\_\+descriptor}!client.\+c@{client.\+c}}
+\subsubsection[{socket\+\_\+descriptor}]{\setlength{\rightskip}{0pt plus 5cm}int socket\+\_\+descriptor}}\label{client_8c_a0103762912774edceb87d33c36a5c9fa}
+\hypertarget{client_8c_a4691718dcb34a3c3134daf1391da0636}{\index{client.\+c@{client.\+c}!t1@{t1}}
+\index{t1@{t1}!client.\+c@{client.\+c}}
+\subsubsection[{t1}]{\setlength{\rightskip}{0pt plus 5cm}pthread\+\_\+t t1}}\label{client_8c_a4691718dcb34a3c3134daf1391da0636}
+\hypertarget{client_8c_a987b292bd3afdfea26c1bab50df42891}{\index{client.\+c@{client.\+c}!t2@{t2}}
+\index{t2@{t2}!client.\+c@{client.\+c}}
+\subsubsection[{t2}]{\setlength{\rightskip}{0pt plus 5cm}pthread\+\_\+t t2}}\label{client_8c_a987b292bd3afdfea26c1bab50df42891}

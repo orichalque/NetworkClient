@@ -1,0 +1,407 @@
+\hypertarget{server_8h}{\section{server.\+h File Reference}
+\label{server_8h}\index{server.\+h@{server.\+h}}
+}
+{\ttfamily \#include $<$stdlib.\+h$>$}\\*
+{\ttfamily \#include $<$stdio.\+h$>$}\\*
+{\ttfamily \#include $<$linux/types.\+h$>$}\\*
+{\ttfamily \#include $<$sys/socket.\+h$>$}\\*
+{\ttfamily \#include $<$netdb.\+h$>$}\\*
+{\ttfamily \#include $<$string.\+h$>$}\\*
+{\ttfamily \#include $<$pthread.\+h$>$}\\*
+{\ttfamily \#include $<$signal.\+h$>$}\\*
+{\ttfamily \#include $<$unistd.\+h$>$}\\*
+{\ttfamily \#include $<$time.\+h$>$}\\*
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structusers}{users}
+\item 
+struct \hyperlink{structrooms}{rooms}
+\item 
+struct \hyperlink{structdictionnary}{dictionnary}
+\item 
+struct \hyperlink{structmsg_to_room_struct}{msg\+To\+Room\+Struct}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{server_8h_a659fc7079d5558af835fb139e038d970}{T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M}~256
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{client_8h_a42add3c85d84ad11f5a0c8d47744df24}{sockaddr} \hyperlink{server_8h_a42add3c85d84ad11f5a0c8d47744df24}{sockaddr}
+\item 
+typedef struct \hyperlink{client_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in} \hyperlink{server_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in}
+\item 
+typedef struct \hyperlink{client_8h_a1d441ee500486e39b27329c91ca436e0}{hostent} \hyperlink{server_8h_a1d441ee500486e39b27329c91ca436e0}{hostent}
+\item 
+typedef struct \hyperlink{client_8h_a4dca506e8bd2a243460e22c092c5f2cb}{servent} \hyperlink{server_8h_a4dca506e8bd2a243460e22c092c5f2cb}{servent}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+char $\ast$ \hyperlink{server_8h_ae216c51c536d80ec30fbc5bf8c6c0146}{find\+Room\+From\+Socket} (int sock)
+\begin{DoxyCompactList}\small\item\em Parcourt chaque room à la recherche du socket, et renvoie la room qui correspond. \end{DoxyCompactList}\item 
+int \hyperlink{server_8h_af5feccad348bf2136a20816768edf2b5}{remove\+Room} (char $\ast$room\+Name)
+\begin{DoxyCompactList}\small\item\em Retire la room désirée, et décalle toutes les autres dans la structure. \end{DoxyCompactList}\item 
+int \hyperlink{server_8h_aea046791b43d682322ca6878580bde47}{remove\+Socket\+From\+Room} (int sock, char $\ast$room\+Name)
+\begin{DoxyCompactList}\small\item\em Supprime le socket d'une room et decalle tous les autres. \end{DoxyCompactList}\item 
+void \hyperlink{server_8h_a6d72376fffe245d05f87e93574e43b31}{read\+Words} (\hyperlink{structdictionnary}{dictionnary} $\ast$d)
+\begin{DoxyCompactList}\small\item\em Ouvre le fichier de mots et lit chaque ligne pour les stocker dans le dictionnaire. \end{DoxyCompactList}\item 
+int \hyperlink{server_8h_a6753628f6999bbee5a3132791964841f}{increment\+Insult} (\hyperlink{client_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in} adresse)
+\begin{DoxyCompactList}\small\item\em incremente le nombre d'insultes d'un client, et le kick si supérieur à 15 a chaque mesage \end{DoxyCompactList}\item 
+int \hyperlink{server_8h_a55d1e328fd69375f4affe112e5e152f1}{update\+User\+File} (\hyperlink{client_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in} adresse)
+\begin{DoxyCompactList}\small\item\em vérifie la présence d'un utilisateur dans le fichier client \end{DoxyCompactList}\item 
+int \hyperlink{server_8h_a15700014c8de97abd84f42243e54b351}{add\+User} (\hyperlink{structusers}{users} $\ast$u, int $\ast$sock)
+\begin{DoxyCompactList}\small\item\em Ajoute un utilisateur dans la room en parametre. \end{DoxyCompactList}\item 
+int \hyperlink{server_8h_ad0fc50f39cf8fea4539806b6ad0d446e}{add\+User\+In\+Room} (int $\ast$sock, char $\ast$room\+Name)
+\begin{DoxyCompactList}\small\item\em Crée la room, ou la retrouve, puis appelle add\+User pour ajouter l'utilisateur dedans. \end{DoxyCompactList}\item 
+void \hyperlink{server_8h_a73a6de6fe59265c61e22577bceb87f06}{afficher\+Rooms} ()
+\begin{DoxyCompactList}\small\item\em affiche toutes les rooms et leur socket, coté serveur. \end{DoxyCompactList}\item 
+char $\ast$ \hyperlink{server_8h_afd4e636fa189c87865af9a27803e3682}{analyse\+Message} (char $\ast$message, \hyperlink{structdictionnary}{dictionnary} $\ast$d, int $\ast$sock)
+\begin{DoxyCompactList}\small\item\em analyse le message, et incrémente le nombre d'insulte s'il y en a une \end{DoxyCompactList}\item 
+char $\ast$ \hyperlink{server_8h_a5b6780f96dbf270e287355ae1cfa69a6}{get\+Server\+Response} (char $\ast$command\+Line)
+\begin{DoxyCompactList}\small\item\em analyse la commande du client pour agir en fonction \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{server_8h_a468e4a0fc1ffda726fdbd8ba05664306}{renvoi\+\_\+message} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Boucle de reception et envoi du message a la room. \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{server_8h_a41b473a330f1246ed84a67f55e0b5b0f}{send\+Message\+To\+Room} (void $\ast$r\+Msg)
+\begin{DoxyCompactList}\small\item\em Fonction threadee d'envoi de message a tous les sockets d'une room. \end{DoxyCompactList}\item 
+void \hyperlink{server_8h_a8c528baf37154d347366083f0f816846}{stop} ()
+\begin{DoxyCompactList}\small\item\em Ferme le server après avoir fermé toutes les room. \end{DoxyCompactList}\item 
+\hyperlink{server_8h_a5ea466849f21e6c2be4ef9b2eb8868d3}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em main, ouvre le serveur et se met en attente de connexions \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{server_8h_a659fc7079d5558af835fb139e038d970}{\index{server.\+h@{server.\+h}!T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M@{T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M}}
+\index{T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M@{T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M}!server.\+h@{server.\+h}}
+\subsubsection[{T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M}]{\setlength{\rightskip}{0pt plus 5cm}\#define T\+A\+I\+L\+L\+E\+\_\+\+M\+A\+X\+\_\+\+N\+O\+M~256}}\label{server_8h_a659fc7079d5558af835fb139e038d970}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{server_8h_a1d441ee500486e39b27329c91ca436e0}{\index{server.\+h@{server.\+h}!hostent@{hostent}}
+\index{hostent@{hostent}!server.\+h@{server.\+h}}
+\subsubsection[{hostent}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf hostent} {\bf hostent}}}\label{server_8h_a1d441ee500486e39b27329c91ca436e0}
+\hypertarget{server_8h_a4dca506e8bd2a243460e22c092c5f2cb}{\index{server.\+h@{server.\+h}!servent@{servent}}
+\index{servent@{servent}!server.\+h@{server.\+h}}
+\subsubsection[{servent}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf servent} {\bf servent}}}\label{server_8h_a4dca506e8bd2a243460e22c092c5f2cb}
+\hypertarget{server_8h_a42add3c85d84ad11f5a0c8d47744df24}{\index{server.\+h@{server.\+h}!sockaddr@{sockaddr}}
+\index{sockaddr@{sockaddr}!server.\+h@{server.\+h}}
+\subsubsection[{sockaddr}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf sockaddr} {\bf sockaddr}}}\label{server_8h_a42add3c85d84ad11f5a0c8d47744df24}
+\hypertarget{server_8h_a448f4d0be082ffd426565074f78b6e32}{\index{server.\+h@{server.\+h}!sockaddr\+\_\+in@{sockaddr\+\_\+in}}
+\index{sockaddr\+\_\+in@{sockaddr\+\_\+in}!server.\+h@{server.\+h}}
+\subsubsection[{sockaddr\+\_\+in}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf sockaddr\+\_\+in} {\bf sockaddr\+\_\+in}}}\label{server_8h_a448f4d0be082ffd426565074f78b6e32}
+
+
+\subsection{Function Documentation}
+\hypertarget{server_8h_a15700014c8de97abd84f42243e54b351}{\index{server.\+h@{server.\+h}!add\+User@{add\+User}}
+\index{add\+User@{add\+User}!server.\+h@{server.\+h}}
+\subsubsection[{add\+User}]{\setlength{\rightskip}{0pt plus 5cm}int add\+User (
+\begin{DoxyParamCaption}
+\item[{{\bf users} $\ast$}]{u, }
+\item[{int $\ast$}]{sock}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a15700014c8de97abd84f42243e54b351}
+
+
+Ajoute un utilisateur dans la room en parametre. 
+
+add\+User 
+\begin{DoxyParams}{Parameters}
+{\em u} & le salon \\
+\hline
+{\em sock} & le socket \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 si ajout reussi, 0 sinon 
+\end{DoxyReturn}
+\hypertarget{server_8h_ad0fc50f39cf8fea4539806b6ad0d446e}{\index{server.\+h@{server.\+h}!add\+User\+In\+Room@{add\+User\+In\+Room}}
+\index{add\+User\+In\+Room@{add\+User\+In\+Room}!server.\+h@{server.\+h}}
+\subsubsection[{add\+User\+In\+Room}]{\setlength{\rightskip}{0pt plus 5cm}int add\+User\+In\+Room (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{sock, }
+\item[{char $\ast$}]{room\+Name}
+\end{DoxyParamCaption}
+)}}\label{server_8h_ad0fc50f39cf8fea4539806b6ad0d446e}
+
+
+Crée la room, ou la retrouve, puis appelle add\+User pour ajouter l'utilisateur dedans. 
+
+add\+User\+In\+Room 
+\begin{DoxyParams}{Parameters}
+{\em sock} & le socket \\
+\hline
+{\em room\+Name} & le nom de la room \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 si ajout reussi, 0 sinon 
+\end{DoxyReturn}
+\hypertarget{server_8h_a73a6de6fe59265c61e22577bceb87f06}{\index{server.\+h@{server.\+h}!afficher\+Rooms@{afficher\+Rooms}}
+\index{afficher\+Rooms@{afficher\+Rooms}!server.\+h@{server.\+h}}
+\subsubsection[{afficher\+Rooms}]{\setlength{\rightskip}{0pt plus 5cm}void afficher\+Rooms (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a73a6de6fe59265c61e22577bceb87f06}
+
+
+affiche toutes les rooms et leur socket, coté serveur. 
+
+afficher\+Rooms \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{server_8h_afd4e636fa189c87865af9a27803e3682}{\index{server.\+h@{server.\+h}!analyse\+Message@{analyse\+Message}}
+\index{analyse\+Message@{analyse\+Message}!server.\+h@{server.\+h}}
+\subsubsection[{analyse\+Message}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ analyse\+Message (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{message, }
+\item[{{\bf dictionnary} $\ast$}]{d, }
+\item[{int $\ast$}]{sock}
+\end{DoxyParamCaption}
+)}}\label{server_8h_afd4e636fa189c87865af9a27803e3682}
+
+
+analyse le message, et incrémente le nombre d'insulte s'il y en a une 
+
+analyse\+M\+Essage 
+\begin{DoxyParams}{Parameters}
+{\em message} & le message a analyser \\
+\hline
+{\em d} & le dictionnaire de mots \\
+\hline
+{\em sock} & le socket du message envoyé \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+le message 
+\end{DoxyReturn}
+\hypertarget{server_8h_ae216c51c536d80ec30fbc5bf8c6c0146}{\index{server.\+h@{server.\+h}!find\+Room\+From\+Socket@{find\+Room\+From\+Socket}}
+\index{find\+Room\+From\+Socket@{find\+Room\+From\+Socket}!server.\+h@{server.\+h}}
+\subsubsection[{find\+Room\+From\+Socket}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ find\+Room\+From\+Socket (
+\begin{DoxyParamCaption}
+\item[{int}]{sock}
+\end{DoxyParamCaption}
+)}}\label{server_8h_ae216c51c536d80ec30fbc5bf8c6c0146}
+
+
+Parcourt chaque room à la recherche du socket, et renvoie la room qui correspond. 
+
+find\+Room\+From\+Socket 
+\begin{DoxyParams}{Parameters}
+{\em sock} & le socket a chercher \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+char$\ast$ room, la room où se trouve le socket 
+\end{DoxyReturn}
+\hypertarget{server_8h_a5b6780f96dbf270e287355ae1cfa69a6}{\index{server.\+h@{server.\+h}!get\+Server\+Response@{get\+Server\+Response}}
+\index{get\+Server\+Response@{get\+Server\+Response}!server.\+h@{server.\+h}}
+\subsubsection[{get\+Server\+Response}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ get\+Server\+Response (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{command\+Line}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a5b6780f96dbf270e287355ae1cfa69a6}
+
+
+analyse la commande du client pour agir en fonction 
+
+get\+Server\+Response 
+\begin{DoxyParams}{Parameters}
+{\em command\+Line} & la commande utilisateur entrée par le client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+la reponse du serveur qui correspond 
+\end{DoxyReturn}
+\hypertarget{server_8h_a6753628f6999bbee5a3132791964841f}{\index{server.\+h@{server.\+h}!increment\+Insult@{increment\+Insult}}
+\index{increment\+Insult@{increment\+Insult}!server.\+h@{server.\+h}}
+\subsubsection[{increment\+Insult}]{\setlength{\rightskip}{0pt plus 5cm}int increment\+Insult (
+\begin{DoxyParamCaption}
+\item[{{\bf sockaddr\+\_\+in}}]{adresse}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a6753628f6999bbee5a3132791964841f}
+
+
+incremente le nombre d'insultes d'un client, et le kick si supérieur à 15 a chaque mesage 
+
+increment\+Insult 
+\begin{DoxyParams}{Parameters}
+{\em adresse} & l'ip du client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 si l'incrementation est effectuée, -\/1 sinon 
+\end{DoxyReturn}
+\hypertarget{server_8h_a5ea466849f21e6c2be4ef9b2eb8868d3}{\index{server.\+h@{server.\+h}!main@{main}}
+\index{main@{main}!server.\+h@{server.\+h}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}main (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a5ea466849f21e6c2be4ef9b2eb8868d3}
+
+
+main, ouvre le serveur et se met en attente de connexions 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 si echec, 0 sinon
+\end{DoxyReturn}
+main, ouvre le serveur et se met en attente de connexions
+
+main 
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 en cas d'echec, 0 sinon 
+\end{DoxyReturn}
+\hypertarget{server_8h_a6d72376fffe245d05f87e93574e43b31}{\index{server.\+h@{server.\+h}!read\+Words@{read\+Words}}
+\index{read\+Words@{read\+Words}!server.\+h@{server.\+h}}
+\subsubsection[{read\+Words}]{\setlength{\rightskip}{0pt plus 5cm}void read\+Words (
+\begin{DoxyParamCaption}
+\item[{{\bf dictionnary} $\ast$}]{d}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a6d72376fffe245d05f87e93574e43b31}
+
+
+Ouvre le fichier de mots et lit chaque ligne pour les stocker dans le dictionnaire. 
+
+read\+Words 
+\begin{DoxyParams}{Parameters}
+{\em d} & le dictionnaire a remplir \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{server_8h_af5feccad348bf2136a20816768edf2b5}{\index{server.\+h@{server.\+h}!remove\+Room@{remove\+Room}}
+\index{remove\+Room@{remove\+Room}!server.\+h@{server.\+h}}
+\subsubsection[{remove\+Room}]{\setlength{\rightskip}{0pt plus 5cm}int remove\+Room (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{room\+Name}
+\end{DoxyParamCaption}
+)}}\label{server_8h_af5feccad348bf2136a20816768edf2b5}
+
+
+Retire la room désirée, et décalle toutes les autres dans la structure. 
+
+remove\+Room 
+\begin{DoxyParams}{Parameters}
+{\em room\+Name} & le nom de la room a supprimer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 si la suppression est reussie, 0 sinon 
+\end{DoxyReturn}
+\hypertarget{server_8h_aea046791b43d682322ca6878580bde47}{\index{server.\+h@{server.\+h}!remove\+Socket\+From\+Room@{remove\+Socket\+From\+Room}}
+\index{remove\+Socket\+From\+Room@{remove\+Socket\+From\+Room}!server.\+h@{server.\+h}}
+\subsubsection[{remove\+Socket\+From\+Room}]{\setlength{\rightskip}{0pt plus 5cm}int remove\+Socket\+From\+Room (
+\begin{DoxyParamCaption}
+\item[{int}]{sock, }
+\item[{char $\ast$}]{room\+Name}
+\end{DoxyParamCaption}
+)}}\label{server_8h_aea046791b43d682322ca6878580bde47}
+
+
+Supprime le socket d'une room et decalle tous les autres. 
+
+remove\+Socket\+From\+Room 
+\begin{DoxyParams}{Parameters}
+{\em sock} & le socket a supprimer \\
+\hline
+{\em room\+Name} & la room ou se trouve le socket \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 si suppression reussie, 0 sinon. 
+\end{DoxyReturn}
+\hypertarget{server_8h_a468e4a0fc1ffda726fdbd8ba05664306}{\index{server.\+h@{server.\+h}!renvoi\+\_\+message@{renvoi\+\_\+message}}
+\index{renvoi\+\_\+message@{renvoi\+\_\+message}!server.\+h@{server.\+h}}
+\subsubsection[{renvoi\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ renvoi\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a468e4a0fc1ffda726fdbd8ba05664306}
+
+
+Boucle de reception et envoi du message a la room. 
+
+renvoi\+\_\+message 
+\begin{DoxyParams}{Parameters}
+{\em arg} & le message envoyé par le client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{server_8h_a41b473a330f1246ed84a67f55e0b5b0f}{\index{server.\+h@{server.\+h}!send\+Message\+To\+Room@{send\+Message\+To\+Room}}
+\index{send\+Message\+To\+Room@{send\+Message\+To\+Room}!server.\+h@{server.\+h}}
+\subsubsection[{send\+Message\+To\+Room}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ send\+Message\+To\+Room (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{r\+Msg}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a41b473a330f1246ed84a67f55e0b5b0f}
+
+
+Fonction threadee d'envoi de message a tous les sockets d'une room. 
+
+send\+Message\+To\+Room 
+\begin{DoxyParams}{Parameters}
+{\em r\+Msg} & le message a envoyer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{server_8h_a8c528baf37154d347366083f0f816846}{\index{server.\+h@{server.\+h}!stop@{stop}}
+\index{stop@{stop}!server.\+h@{server.\+h}}
+\subsubsection[{stop}]{\setlength{\rightskip}{0pt plus 5cm}void stop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a8c528baf37154d347366083f0f816846}
+
+
+Ferme le server après avoir fermé toutes les room. 
+
+stop \begin{DoxyReturn}{Returns}
+void
+\end{DoxyReturn}
+Ferme le server après avoir fermé toutes les room.
+
+\hyperlink{server_8h_a8c528baf37154d347366083f0f816846}{stop()} \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{server_8h_a55d1e328fd69375f4affe112e5e152f1}{\index{server.\+h@{server.\+h}!update\+User\+File@{update\+User\+File}}
+\index{update\+User\+File@{update\+User\+File}!server.\+h@{server.\+h}}
+\subsubsection[{update\+User\+File}]{\setlength{\rightskip}{0pt plus 5cm}int update\+User\+File (
+\begin{DoxyParamCaption}
+\item[{{\bf sockaddr\+\_\+in}}]{adresse}
+\end{DoxyParamCaption}
+)}}\label{server_8h_a55d1e328fd69375f4affe112e5e152f1}
+
+
+vérifie la présence d'un utilisateur dans le fichier client 
+
+update\+User\+File 
+\begin{DoxyParams}{Parameters}
+{\em adresse} & l'ip du client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -\/1 si erreur 
+\end{DoxyReturn}

@@ -19,11 +19,7 @@ char *salon; //limite 16 char
 char pseudoWithComa[14];
 char pseudoWithComaAndRoom[26];
 
-/**
- * @function stop()
- * @brief Fonction d'arrêt du client, ferme le socket et les threads
- * @return void
- */
+/* ----------------------------------------------------------------- */
 void stop(){
     //message automatique pour prevenir de la deconnexion
     char mesg[512];
@@ -44,13 +40,7 @@ void stop(){
     exit(0);
 }
 
-
-/**
- * @function envoi_message
- * @param arg, message ecrit par le client
- * @return void
- * @brief Fonction threadée d'envoi de message, se ferme une fois le message envoyé
- */
+/* ----------------------------------------------------------------- */
 void *envoi_message(void* arg){
     char buffer[257];
     char mesg[512];
@@ -74,14 +64,8 @@ void *envoi_message(void* arg){
     pthread_exit(NULL);
 }
 
-//code thread reception message
-/**
- * @function reception_message
- * @param arg le message reçu par le client
- * @return void
- * @brief Boucle de reception, traitement et affichage du message.
- * Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client
- */
+
+/* ----------------------------------------------------------------- */
 void *reception_message(void* arg){
     char buffer[257];
     int longueur;
@@ -127,13 +111,7 @@ void *reception_message(void* arg){
     pthread_exit(NULL);
 }
 
-/**
- * 
- * @param argc
- * @param argv
- * @return 1 en cas d'echec, 0 sinon
- * @brief fonction main, se connecte au serveur et recupere les entrées client
- */
+/* ----------------------------------------------------------------- */
 int main(int argc, char **argv) {
     char mesg[512];
     if (argc < 3) { // verification du nombre d'argument

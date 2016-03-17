@@ -1,0 +1,162 @@
+.TH "client.c" 3 "Thu Mar 17 2016" "Version 1.00a" "Sublim Telegram" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+client.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'client\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBstop\fP ()"
+.br
+.RI "\fIFonction d'arrêt du client, ferme le socket et les threads\&. \fP"
+.ti -1c
+.RI "void * \fBenvoi_message\fP (void *arg)"
+.br
+.RI "\fIFonction threadée d'envoi de message, se ferme une fois le message envoyé \fP"
+.ti -1c
+.RI "void * \fBreception_message\fP (void *arg)"
+.br
+.RI "\fIBoucle de reception, traitement et affichage du message\&. Thread unique contenant une boucle infinie\&. s'arrête a la deconnexion du client\&. \fP"
+.ti -1c
+.RI "int \fBmain\fP (int argc, char **argv)"
+.br
+.RI "\fIfonction main, se connecte au serveur et recupere les entrées client \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBsockaddr_in\fP \fBadresse_locale\fP"
+.br
+.ti -1c
+.RI "\fBhostent\fP * \fBptr_host\fP"
+.br
+.ti -1c
+.RI "\fBservent\fP * \fBptr_service\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBt1\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBt2\fP"
+.br
+.ti -1c
+.RI "int \fBsocket_descriptor\fP"
+.br
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "char * \fBpseudo\fP"
+.br
+.ti -1c
+.RI "char * \fBsalon\fP"
+.br
+.ti -1c
+.RI "char \fBpseudoWithComa\fP [14]"
+.br
+.ti -1c
+.RI "char \fBpseudoWithComaAndRoom\fP [26]"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void* envoi_message (void *arg)"
+
+.PP
+Fonction threadée d'envoi de message, se ferme une fois le message envoyé envoi_message 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIarg,message\fP ecrit par le client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "int main (intargc, char **argv)"
+
+.PP
+fonction main, se connecte au serveur et recupere les entrées client main, ouvre le serveur et se met en attente de connexions
+.PP
+main 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP 
+.br
+\fIargv\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 en cas d'echec, 0 sinon 
+.RE
+.PP
+
+.SS "void* reception_message (void *arg)"
+
+.PP
+Boucle de reception, traitement et affichage du message\&. Thread unique contenant une boucle infinie\&. s'arrête a la deconnexion du client\&. reception_message 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIarg\fP le message reçu par le client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "void stop ()"
+
+.PP
+Fonction d'arrêt du client, ferme le socket et les threads\&. Ferme le server après avoir fermé toutes les room\&.
+.PP
+\fBstop()\fP 
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "\fBsockaddr_in\fP adresse_locale"
+
+.SS "char* host"
+
+.SS "char* pseudo"
+
+.SS "char pseudoWithComa[14]"
+
+.SS "char pseudoWithComaAndRoom[26]"
+
+.SS "\fBhostent\fP* ptr_host"
+
+.SS "\fBservent\fP* ptr_service"
+
+.SS "char* salon"
+
+.SS "int socket_descriptor"
+
+.SS "pthread_t t1"
+
+.SS "pthread_t t2"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Sublim Telegram from the source code\&.

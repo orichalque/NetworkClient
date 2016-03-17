@@ -27,9 +27,37 @@ typedef struct sockaddr_in 	sockaddr_in;
 typedef struct hostent 		hostent;
 typedef struct servent 		servent;
 
+/**
+ * @function stop()
+ * @brief Fonction d'arrêt du client, ferme le socket et les threads
+ * @return void
+ */
 void stop();
+
+/**
+ * @function envoi_message
+ * @param arg, message ecrit par le client
+ * @return void
+ * @brief Fonction threadée d'envoi de message, se ferme une fois le message envoyé
+ */
 void *envoi_message(void* arg);
+
+/**
+ * @function reception_message
+ * @param arg le message reçu par le client
+ * @return void
+ * @brief Boucle de reception, traitement et affichage du message.
+ * Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client
+ */
 void *reception_message(void* arg);
+
+/**
+ * @function main 
+ * @param argc
+ * @param argv
+ * @return 1 en cas d'echec, 0 sinon
+ * @brief fonction main, se connecte au serveur et recupere les entrées client
+ */
 int main(int argc, char **argv);
 
 #ifdef	__cplusplus

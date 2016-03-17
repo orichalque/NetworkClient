@@ -1,0 +1,418 @@
+.TH "server.h" 3 "Thu Mar 17 2016" "Version 1.00a" "Sublim Telegram" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+server.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <linux/types\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+\fC#include <signal\&.h>\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <time\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBusers\fP"
+.br
+.ti -1c
+.RI "struct \fBrooms\fP"
+.br
+.ti -1c
+.RI "struct \fBdictionnary\fP"
+.br
+.ti -1c
+.RI "struct \fBmsgToRoomStruct\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBTAILLE_MAX_NOM\fP   256"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBsockaddr\fP \fBsockaddr\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBsockaddr_in\fP \fBsockaddr_in\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBhostent\fP \fBhostent\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBservent\fP \fBservent\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "char * \fBfindRoomFromSocket\fP (int sock)"
+.br
+.RI "\fIParcourt chaque room à la recherche du socket, et renvoie la room qui correspond\&. \fP"
+.ti -1c
+.RI "int \fBremoveRoom\fP (char *roomName)"
+.br
+.RI "\fIRetire la room désirée, et décalle toutes les autres dans la structure\&. \fP"
+.ti -1c
+.RI "int \fBremoveSocketFromRoom\fP (int sock, char *roomName)"
+.br
+.RI "\fISupprime le socket d'une room et decalle tous les autres\&. \fP"
+.ti -1c
+.RI "void \fBreadWords\fP (\fBdictionnary\fP *d)"
+.br
+.RI "\fIOuvre le fichier de mots et lit chaque ligne pour les stocker dans le dictionnaire\&. \fP"
+.ti -1c
+.RI "int \fBincrementInsult\fP (\fBsockaddr_in\fP adresse)"
+.br
+.RI "\fIincremente le nombre d'insultes d'un client, et le kick si supérieur à 15 a chaque mesage \fP"
+.ti -1c
+.RI "int \fBupdateUserFile\fP (\fBsockaddr_in\fP adresse)"
+.br
+.RI "\fIvérifie la présence d'un utilisateur dans le fichier client \fP"
+.ti -1c
+.RI "int \fBaddUser\fP (\fBusers\fP *u, int *sock)"
+.br
+.RI "\fIAjoute un utilisateur dans la room en parametre\&. \fP"
+.ti -1c
+.RI "int \fBaddUserInRoom\fP (int *sock, char *roomName)"
+.br
+.RI "\fICrée la room, ou la retrouve, puis appelle addUser pour ajouter l'utilisateur dedans\&. \fP"
+.ti -1c
+.RI "void \fBafficherRooms\fP ()"
+.br
+.RI "\fIaffiche toutes les rooms et leur socket, coté serveur\&. \fP"
+.ti -1c
+.RI "char * \fBanalyseMessage\fP (char *message, \fBdictionnary\fP *d, int *sock)"
+.br
+.RI "\fIanalyse le message, et incrémente le nombre d'insulte s'il y en a une \fP"
+.ti -1c
+.RI "char * \fBgetServerResponse\fP (char *commandLine)"
+.br
+.RI "\fIanalyse la commande du client pour agir en fonction \fP"
+.ti -1c
+.RI "void * \fBrenvoi_message\fP (void *arg)"
+.br
+.RI "\fIBoucle de reception et envoi du message a la room\&. \fP"
+.ti -1c
+.RI "void * \fBsendMessageToRoom\fP (void *rMsg)"
+.br
+.RI "\fIFonction threadee d'envoi de message a tous les sockets d'une room\&. \fP"
+.ti -1c
+.RI "void \fBstop\fP ()"
+.br
+.RI "\fIFerme le server après avoir fermé toutes les room\&. \fP"
+.ti -1c
+.RI "\fBmain\fP (int argc, char **argv)"
+.br
+.RI "\fImain, ouvre le serveur et se met en attente de connexions \fP"
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define TAILLE_MAX_NOM   256"
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBhostent\fP \fBhostent\fP"
+
+.SS "typedef struct \fBservent\fP \fBservent\fP"
+
+.SS "typedef struct \fBsockaddr\fP \fBsockaddr\fP"
+
+.SS "typedef struct \fBsockaddr_in\fP \fBsockaddr_in\fP"
+
+.SH "Function Documentation"
+.PP 
+.SS "int addUser (\fBusers\fP *u, int *sock)"
+
+.PP
+Ajoute un utilisateur dans la room en parametre\&. addUser 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIu\fP le salon 
+.br
+\fIsock\fP le socket 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 si ajout reussi, 0 sinon 
+.RE
+.PP
+
+.SS "int addUserInRoom (int *sock, char *roomName)"
+
+.PP
+Crée la room, ou la retrouve, puis appelle addUser pour ajouter l'utilisateur dedans\&. addUserInRoom 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsock\fP le socket 
+.br
+\fIroomName\fP le nom de la room 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 si ajout reussi, 0 sinon 
+.RE
+.PP
+
+.SS "void afficherRooms ()"
+
+.PP
+affiche toutes les rooms et leur socket, coté serveur\&. afficherRooms 
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "char* analyseMessage (char *message, \fBdictionnary\fP *d, int *sock)"
+
+.PP
+analyse le message, et incrémente le nombre d'insulte s'il y en a une analyseMEssage 
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP le message a analyser 
+.br
+\fId\fP le dictionnaire de mots 
+.br
+\fIsock\fP le socket du message envoyé 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+le message 
+.RE
+.PP
+
+.SS "char* findRoomFromSocket (intsock)"
+
+.PP
+Parcourt chaque room à la recherche du socket, et renvoie la room qui correspond\&. findRoomFromSocket 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsock\fP le socket a chercher 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+char* room, la room où se trouve le socket 
+.RE
+.PP
+
+.SS "char* getServerResponse (char *commandLine)"
+
+.PP
+analyse la commande du client pour agir en fonction getServerResponse 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcommandLine\fP la commande utilisateur entrée par le client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+la reponse du serveur qui correspond 
+.RE
+.PP
+
+.SS "int incrementInsult (\fBsockaddr_in\fPadresse)"
+
+.PP
+incremente le nombre d'insultes d'un client, et le kick si supérieur à 15 a chaque mesage incrementInsult 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIadresse\fP l'ip du client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 si l'incrementation est effectuée, -1 sinon 
+.RE
+.PP
+
+.SS "main (intargc, char **argv)"
+
+.PP
+main, ouvre le serveur et se met en attente de connexions 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP 
+.br
+\fIargv\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 si echec, 0 sinon
+.RE
+.PP
+main, ouvre le serveur et se met en attente de connexions
+.PP
+main 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP 
+.br
+\fIargv\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 en cas d'echec, 0 sinon 
+.RE
+.PP
+
+.SS "void readWords (\fBdictionnary\fP *d)"
+
+.PP
+Ouvre le fichier de mots et lit chaque ligne pour les stocker dans le dictionnaire\&. readWords 
+.PP
+\fBParameters:\fP
+.RS 4
+\fId\fP le dictionnaire a remplir 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "int removeRoom (char *roomName)"
+
+.PP
+Retire la room désirée, et décalle toutes les autres dans la structure\&. removeRoom 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIroomName\fP le nom de la room a supprimer 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 si la suppression est reussie, 0 sinon 
+.RE
+.PP
+
+.SS "int removeSocketFromRoom (intsock, char *roomName)"
+
+.PP
+Supprime le socket d'une room et decalle tous les autres\&. removeSocketFromRoom 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsock\fP le socket a supprimer 
+.br
+\fIroomName\fP la room ou se trouve le socket 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 si suppression reussie, 0 sinon\&. 
+.RE
+.PP
+
+.SS "void* renvoi_message (void *arg)"
+
+.PP
+Boucle de reception et envoi du message a la room\&. renvoi_message 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIarg\fP le message envoyé par le client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "void* sendMessageToRoom (void *rMsg)"
+
+.PP
+Fonction threadee d'envoi de message a tous les sockets d'une room\&. sendMessageToRoom 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIrMsg\fP le message a envoyer 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "void stop ()"
+
+.PP
+Ferme le server après avoir fermé toutes les room\&. stop 
+.PP
+\fBReturns:\fP
+.RS 4
+void
+.RE
+.PP
+Ferme le server après avoir fermé toutes les room\&.
+.PP
+\fBstop()\fP 
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "int updateUserFile (\fBsockaddr_in\fPadresse)"
+
+.PP
+vérifie la présence d'un utilisateur dans le fichier client updateUserFile 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIadresse\fP l'ip du client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+retourne 1 si l'utilisateur est nouveau, 0 si déja connu, -1 si erreur 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Sublim Telegram from the source code\&.

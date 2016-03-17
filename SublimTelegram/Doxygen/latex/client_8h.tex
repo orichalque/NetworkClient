@@ -1,0 +1,125 @@
+\hypertarget{client_8h}{\section{client.\+h File Reference}
+\label{client_8h}\index{client.\+h@{client.\+h}}
+}
+{\ttfamily \#include $<$stdlib.\+h$>$}\\*
+{\ttfamily \#include $<$stdio.\+h$>$}\\*
+{\ttfamily \#include $<$linux/types.\+h$>$}\\*
+{\ttfamily \#include $<$sys/socket.\+h$>$}\\*
+{\ttfamily \#include $<$netdb.\+h$>$}\\*
+{\ttfamily \#include $<$string.\+h$>$}\\*
+{\ttfamily \#include $<$pthread.\+h$>$}\\*
+{\ttfamily \#include $<$signal.\+h$>$}\\*
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{client_8h_a42add3c85d84ad11f5a0c8d47744df24}{sockaddr} \hyperlink{client_8h_a42add3c85d84ad11f5a0c8d47744df24}{sockaddr}
+\item 
+typedef struct \hyperlink{client_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in} \hyperlink{client_8h_a448f4d0be082ffd426565074f78b6e32}{sockaddr\+\_\+in}
+\item 
+typedef struct \hyperlink{client_8h_a1d441ee500486e39b27329c91ca436e0}{hostent} \hyperlink{client_8h_a1d441ee500486e39b27329c91ca436e0}{hostent}
+\item 
+typedef struct \hyperlink{client_8h_a4dca506e8bd2a243460e22c092c5f2cb}{servent} \hyperlink{client_8h_a4dca506e8bd2a243460e22c092c5f2cb}{servent}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{client_8h_a8c528baf37154d347366083f0f816846}{stop} ()
+\begin{DoxyCompactList}\small\item\em Fonction d'arrêt du client, ferme le socket et les threads. \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{client_8h_a4e322b445adbb5f5cfc113cc13c1fddb}{envoi\+\_\+message} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Fonction threadée d'envoi de message, se ferme une fois le message envoyé \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{client_8h_a69fbe0865292b0a51b6f1f34e24c48c1}{reception\+\_\+message} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Boucle de reception, traitement et affichage du message. Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client. \end{DoxyCompactList}\item 
+int \hyperlink{client_8h_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em fonction main, se connecte au serveur et recupere les entrées client \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{client_8h_a1d441ee500486e39b27329c91ca436e0}{\index{client.\+h@{client.\+h}!hostent@{hostent}}
+\index{hostent@{hostent}!client.\+h@{client.\+h}}
+\subsubsection[{hostent}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf hostent} {\bf hostent}}}\label{client_8h_a1d441ee500486e39b27329c91ca436e0}
+\hypertarget{client_8h_a4dca506e8bd2a243460e22c092c5f2cb}{\index{client.\+h@{client.\+h}!servent@{servent}}
+\index{servent@{servent}!client.\+h@{client.\+h}}
+\subsubsection[{servent}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf servent} {\bf servent}}}\label{client_8h_a4dca506e8bd2a243460e22c092c5f2cb}
+\hypertarget{client_8h_a42add3c85d84ad11f5a0c8d47744df24}{\index{client.\+h@{client.\+h}!sockaddr@{sockaddr}}
+\index{sockaddr@{sockaddr}!client.\+h@{client.\+h}}
+\subsubsection[{sockaddr}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf sockaddr} {\bf sockaddr}}}\label{client_8h_a42add3c85d84ad11f5a0c8d47744df24}
+\hypertarget{client_8h_a448f4d0be082ffd426565074f78b6e32}{\index{client.\+h@{client.\+h}!sockaddr\+\_\+in@{sockaddr\+\_\+in}}
+\index{sockaddr\+\_\+in@{sockaddr\+\_\+in}!client.\+h@{client.\+h}}
+\subsubsection[{sockaddr\+\_\+in}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf sockaddr\+\_\+in} {\bf sockaddr\+\_\+in}}}\label{client_8h_a448f4d0be082ffd426565074f78b6e32}
+
+
+\subsection{Function Documentation}
+\hypertarget{client_8h_a4e322b445adbb5f5cfc113cc13c1fddb}{\index{client.\+h@{client.\+h}!envoi\+\_\+message@{envoi\+\_\+message}}
+\index{envoi\+\_\+message@{envoi\+\_\+message}!client.\+h@{client.\+h}}
+\subsubsection[{envoi\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ envoi\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{client_8h_a4e322b445adbb5f5cfc113cc13c1fddb}
+
+
+Fonction threadée d'envoi de message, se ferme une fois le message envoyé 
+
+envoi\+\_\+message 
+\begin{DoxyParams}{Parameters}
+{\em arg,message} & ecrit par le client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{client_8h_a3c04138a5bfe5d72780bb7e82a18e627}{\index{client.\+h@{client.\+h}!main@{main}}
+\index{main@{main}!client.\+h@{client.\+h}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{client_8h_a3c04138a5bfe5d72780bb7e82a18e627}
+
+
+fonction main, se connecte au serveur et recupere les entrées client 
+
+main 
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 en cas d'echec, 0 sinon 
+\end{DoxyReturn}
+\hypertarget{client_8h_a69fbe0865292b0a51b6f1f34e24c48c1}{\index{client.\+h@{client.\+h}!reception\+\_\+message@{reception\+\_\+message}}
+\index{reception\+\_\+message@{reception\+\_\+message}!client.\+h@{client.\+h}}
+\subsubsection[{reception\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ reception\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{client_8h_a69fbe0865292b0a51b6f1f34e24c48c1}
+
+
+Boucle de reception, traitement et affichage du message. Thread unique contenant une boucle infinie. s'arrête a la deconnexion du client. 
+
+reception\+\_\+message 
+\begin{DoxyParams}{Parameters}
+{\em arg} & le message reçu par le client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\hypertarget{client_8h_a8c528baf37154d347366083f0f816846}{\index{client.\+h@{client.\+h}!stop@{stop}}
+\index{stop@{stop}!client.\+h@{client.\+h}}
+\subsubsection[{stop}]{\setlength{\rightskip}{0pt plus 5cm}void stop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{client_8h_a8c528baf37154d347366083f0f816846}
+
+
+Fonction d'arrêt du client, ferme le socket et les threads. 
+
+\hyperlink{client_8h_a8c528baf37154d347366083f0f816846}{stop()} \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}

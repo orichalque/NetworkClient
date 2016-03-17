@@ -1,0 +1,27 @@
+var server_8h =
+[
+    [ "users", "structusers.html", "structusers" ],
+    [ "rooms", "structrooms.html", "structrooms" ],
+    [ "dictionnary", "structdictionnary.html", "structdictionnary" ],
+    [ "msgToRoomStruct", "structmsg_to_room_struct.html", "structmsg_to_room_struct" ],
+    [ "TAILLE_MAX_NOM", "server_8h.html#a659fc7079d5558af835fb139e038d970", null ],
+    [ "hostent", "server_8h.html#a1d441ee500486e39b27329c91ca436e0", null ],
+    [ "servent", "server_8h.html#a4dca506e8bd2a243460e22c092c5f2cb", null ],
+    [ "sockaddr", "server_8h.html#a42add3c85d84ad11f5a0c8d47744df24", null ],
+    [ "sockaddr_in", "server_8h.html#a448f4d0be082ffd426565074f78b6e32", null ],
+    [ "addUser", "server_8h.html#a15700014c8de97abd84f42243e54b351", null ],
+    [ "addUserInRoom", "server_8h.html#ad0fc50f39cf8fea4539806b6ad0d446e", null ],
+    [ "afficherRooms", "server_8h.html#a73a6de6fe59265c61e22577bceb87f06", null ],
+    [ "analyseMessage", "server_8h.html#afd4e636fa189c87865af9a27803e3682", null ],
+    [ "findRoomFromSocket", "server_8h.html#ae216c51c536d80ec30fbc5bf8c6c0146", null ],
+    [ "getServerResponse", "server_8h.html#a5b6780f96dbf270e287355ae1cfa69a6", null ],
+    [ "incrementInsult", "server_8h.html#a6753628f6999bbee5a3132791964841f", null ],
+    [ "main", "server_8h.html#a5ea466849f21e6c2be4ef9b2eb8868d3", null ],
+    [ "readWords", "server_8h.html#a6d72376fffe245d05f87e93574e43b31", null ],
+    [ "removeRoom", "server_8h.html#af5feccad348bf2136a20816768edf2b5", null ],
+    [ "removeSocketFromRoom", "server_8h.html#aea046791b43d682322ca6878580bde47", null ],
+    [ "renvoi_message", "server_8h.html#a468e4a0fc1ffda726fdbd8ba05664306", null ],
+    [ "sendMessageToRoom", "server_8h.html#a41b473a330f1246ed84a67f55e0b5b0f", null ],
+    [ "stop", "server_8h.html#a8c528baf37154d347366083f0f816846", null ],
+    [ "updateUserFile", "server_8h.html#a55d1e328fd69375f4affe112e5e152f1", null ]
+];

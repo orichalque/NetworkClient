@@ -1,0 +1,41 @@
+\begin{theindex}
+
+  \item {dictionnary}, \hyperpage{5}
+    \subitem {sz}, \hyperpage{5}
+    \subitem {words}, \hyperpage{5}
+
+  \indexspace
+
+  \item {name}
+    \subitem {users}, \hyperpage{6}
+
+  \indexspace
+
+  \item {room}
+    \subitem {rooms}, \hyperpage{6}
+  \item {rooms}, \hyperpage{6}
+    \subitem {room}, \hyperpage{6}
+    \subitem {sz}, \hyperpage{6}
+
+  \indexspace
+
+  \item {socks}
+    \subitem {users}, \hyperpage{6}
+  \item {sz}
+    \subitem {dictionnary}, \hyperpage{5}
+    \subitem {rooms}, \hyperpage{6}
+    \subitem {users}, \hyperpage{6}
+
+  \indexspace
+
+  \item {users}, \hyperpage{6}
+    \subitem {name}, \hyperpage{6}
+    \subitem {socks}, \hyperpage{6}
+    \subitem {sz}, \hyperpage{6}
+
+  \indexspace
+
+  \item {words}
+    \subitem {dictionnary}, \hyperpage{5}
+
+\end{theindex}

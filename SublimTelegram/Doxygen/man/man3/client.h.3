@@ -1,0 +1,137 @@
+.TH "client.h" 3 "Thu Mar 17 2016" "Version 1.00a" "Sublim Telegram" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+client.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <linux/types\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+\fC#include <signal\&.h>\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBsockaddr\fP \fBsockaddr\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBsockaddr_in\fP \fBsockaddr_in\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBhostent\fP \fBhostent\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBservent\fP \fBservent\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBstop\fP ()"
+.br
+.RI "\fIFonction d'arrêt du client, ferme le socket et les threads\&. \fP"
+.ti -1c
+.RI "void * \fBenvoi_message\fP (void *arg)"
+.br
+.RI "\fIFonction threadée d'envoi de message, se ferme une fois le message envoyé \fP"
+.ti -1c
+.RI "void * \fBreception_message\fP (void *arg)"
+.br
+.RI "\fIBoucle de reception, traitement et affichage du message\&. Thread unique contenant une boucle infinie\&. s'arrête a la deconnexion du client\&. \fP"
+.ti -1c
+.RI "int \fBmain\fP (int argc, char **argv)"
+.br
+.RI "\fIfonction main, se connecte au serveur et recupere les entrées client \fP"
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBhostent\fP \fBhostent\fP"
+
+.SS "typedef struct \fBservent\fP \fBservent\fP"
+
+.SS "typedef struct \fBsockaddr\fP \fBsockaddr\fP"
+
+.SS "typedef struct \fBsockaddr_in\fP \fBsockaddr_in\fP"
+
+.SH "Function Documentation"
+.PP 
+.SS "void* envoi_message (void *arg)"
+
+.PP
+Fonction threadée d'envoi de message, se ferme une fois le message envoyé envoi_message 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIarg,message\fP ecrit par le client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "int main (intargc, char **argv)"
+
+.PP
+fonction main, se connecte au serveur et recupere les entrées client main 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargc\fP 
+.br
+\fIargv\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 en cas d'echec, 0 sinon 
+.RE
+.PP
+
+.SS "void* reception_message (void *arg)"
+
+.PP
+Boucle de reception, traitement et affichage du message\&. Thread unique contenant une boucle infinie\&. s'arrête a la deconnexion du client\&. reception_message 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIarg\fP le message reçu par le client 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SS "void stop ()"
+
+.PP
+Fonction d'arrêt du client, ferme le socket et les threads\&. \fBstop()\fP 
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Sublim Telegram from the source code\&.
