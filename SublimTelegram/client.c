@@ -70,7 +70,6 @@ void *envoi_message(void* arg){
 	strcat(mesg, arg);
     mesg[strlen(mesg)]='\0';
     // envoi du message vers le serveur
-    printf("Message de longueur: %d\n", (int)strlen(mesg));
     if ((write(socket_descriptor, mesg, strlen(mesg) )) < 0) {
 		perror("erreur : impossible d'ecrire le message destine au serveur.");
 		stop();
@@ -93,12 +92,12 @@ void *reception_message(void* arg){
 				if (buffer[1]=='0'){
 					printf("Le salon a ete ferme par l'administrateur\n");
 					printf("Deconnexion ...\n");
-					stop();
+					exit(0);
 					break;
 				}else if(buffer[1]=='1'){
 					printf("Le serveur a ete interrompue ferme\n");
 					printf("Deconnexion ...\n");
-					stop();
+					exit(0);
 					break;
 				}else if(buffer[1]=='2'){
 					printf("Vous etes expulse du serveur. Un peu de courtoisie. Merci !\n");
@@ -108,7 +107,7 @@ void *reception_message(void* arg){
 				}else if(buffer[1]=='3'){
 					printf("le salon est plein. Revenez plus tard\n");
 					printf("Deconnexion ...\n");
-					stop();
+					exit(0);
 				}else if(buffer[1]=='4'){
 					printf("Vous venez de creer un salon.\n");
 				}else if(buffer[1]=='5'){
@@ -183,7 +182,7 @@ int main(int argc, char **argv) {
     }
 
     printf("connexion etablie avec le serveur. \n");
-	strcat(mesg, "vient de rejoindre le salon");
+    strcpy(mesg, "vient de rejoindre le salon");
 	pthread_create(&t1, NULL, (void*(*)(void*))envoi_message, &mesg);
     //execution de stop() si l'utilisateur presse CTRL+C
     signal(SIGINT,stop);
