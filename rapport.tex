@@ -138,7 +138,7 @@ Un message système est envoyé du serveur et permet de prévenir un client d'un
  \hline  
  \end{tabular}
 \paragraph{}
-Le client recevant un tel message va voir apparaître un message d'erreur et est déconnecté.
+Le client recevant un tel message va voir apparaître un message système adapté.
 Voici la table de correspondance des $id_{message}$ avec leur signification.
 \paragraph{}
 \begin{tabular}{|c|c|}
@@ -149,7 +149,7 @@ Voici la table de correspondance des $id_{message}$ avec leur signification.
  \hline  
  	1 & fermeture serveur \\
  \hline
- 	2 & utilisateur kick \\
+ 	2 & utilisateur kické \\
  \hline
  	3 & salon plein \\
  \hline
@@ -157,6 +157,18 @@ Voici la table de correspondance des $id_{message}$ avec leur signification.
  \hline
  	5 & salon rejoins \\
  \hline
+    6 & commandes disponibles \\
+ \hline
+ 	7 & dernier socket connecté \\
+ \hline
+ 	8 & un utilisateur est expulsé \\
+ \hline
+    9 & erreur kick \\
+ \hline
 \end{tabular}
+\paragraph{}
+L'analyse des commandes est géré du coté serveur. Si une commande est rajoutée, seul la mise a jour du serveur est nécessaire. Des clients possèdent une version différentes de \emph{sublim Telegram} peuvent communiquer ensembles à condition que les trames n'ai pas été modifiées.
+\section{Problèmes rencontrés}
 
+\section{Conclusion}
 \end{document}
