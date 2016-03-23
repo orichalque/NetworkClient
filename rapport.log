@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.11.3)  8 MAR 2016 13:59
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.11.3)  23 MAR 2016 13:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -558,45 +558,45 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 ] [3
 
 ] [4]
-Overfull \hbox (3.26585pt too wide) in paragraph at lines 86--86
+Overfull \hbox (3.26585pt too wide) in paragraph at lines 100--100
 []\T1/cmr/m/n/12 [hh :mm :ss]| 
  []
 
 
-Overfull \hbox (3.26585pt too wide) in paragraph at lines 97--97
+Overfull \hbox (3.26585pt too wide) in paragraph at lines 111--111
 []\T1/cmr/m/n/12 [hh :mm :ss]| 
  []
 
 
-Overfull \hbox (3.26585pt too wide) in paragraph at lines 107--107
+Overfull \hbox (3.26585pt too wide) in paragraph at lines 121--121
 []\T1/cmr/m/n/12 [hh :mm :ss]| 
  []
 
-[5] [6] (./rapport.aux) ) 
+[5] [6] [7] (./rapport.aux) ) 
 Here is how much of TeX's memory you used:
  4449 strings out of 494999
  57383 string characters out of 6180228
- 133045 words of memory out of 5000000
+ 134045 words of memory out of 5000000
  7579 multiletter control sequences out of 15000+600000
  18465 words of font info for 53 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  38i,10n,43p,486b,379s stack positions out of 5000i,500n,10000p,200000b,80000s
- </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappe
-n/ec/ecbx1440.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/
-ecti1200.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1
-200.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.6
-00pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecsl1200.600pk>
- </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </co
-mptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1440.600pk> </comptes
-/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> </comptes/E125
-757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm2074.600pk></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/latxfont/lcirclew.pfb>
-Output written on rapport.pdf (6 pages, 118756 bytes).
+ </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jkn
+appen/ec/ecbx1440.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen
+/ec/ecti1200.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/e
+cbx1200.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx17
+28.600pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecsl1200.60
+0pk> </comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> 
+</comptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1440.600pk> </com
+ptes/E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> </comptes/
+E125757S/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm2074.600pk></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/latxfont/lcirclew.pfb>
+Output written on rapport.pdf (7 pages, 126315 bytes).
 PDF statistics:
- 348 PDF objects out of 1000 (max. 8388607)
- 59 compressed objects within 1 object stream
+ 366 PDF objects out of 1000 (max. 8388607)
+ 63 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

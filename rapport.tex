@@ -104,7 +104,7 @@ Un message envoyé par un utilisateur au serveur, est inscrit dans le buffer sou
  \end{tabular}
  \paragraph{}
 Le message est reçu par le serveur qui s'occupe de renvoyer le message à tout les clients du salon inscrit dans le message.
-Ce dernier element est enlevé de la trame juste avant l'envoi ce qui donne le message ci dessous.
+Ce dernier élément est enlevé de la trame juste avant l'envoi ce qui donne le message ci dessous.
 \paragraph{}
  \begin{tabular}{|p{0.5cm}|p{2cm}|p{1.5cm}|p{5cm}| }
   \hline			
@@ -169,6 +169,16 @@ Voici la table de correspondance des $id_{message}$ avec leur signification.
 \paragraph{}
 L'analyse des commandes est géré du coté serveur. Si une commande est rajoutée, seul la mise a jour du serveur est nécessaire. Des clients possèdent une version différentes de \emph{sublim Telegram} peuvent communiquer ensembles à condition que les trames n'ai pas été modifiées.
 \section{Problèmes rencontrés}
-
+\paragraph{}
+Au cours de la présentation de \emph{SublimTelegram}, une erreur est survenue lors de l'envoi d'un message par un client, sur une machine différente. Une boucle infinie a interrompu la réception des trames issues du serveur. Nous n'avons malheureusement pas su reproduire ce bug.
+\paragraph{}
+Au niveau du serveur, la partie réseau n'a pas posé de difficultés. Cependant, la majeure partie des problemes provenait d'erreurs de programmation liées au langage \emph{C} et plus particulièrement la gestion des pointeurs et mémoire.
 \section{Conclusion}
+\paragraph{}
+Pour conclure, ce fût un projet particulièrement intéressant. Depuis le début de notre cursus nous n'avions jamais été confronté à des problèmes de réseau, et implémenter une solution logicielle comme \emph{Sublim Telegram} nous a permis de découvrir la programmation par Sockets en C. 
+Même si notre code est fonctionnel, nous n'avons pas pu implémenter tout ce que nous désirions. Effectivement nous voulions faire de \emph{Sublim Telegram} une application complète, mêlant une \emph{Sublime} interface graphique, et des activités diverses à l'intention des utilisateurs. 
+
+Cependant, La structure de nos trames nous permets aisément d'ajouter des fonctionnalités. En effet, il est possible d’intégrer de nouveaux types de messages en modifiant l'identifiant de la trame.
+Par exemple, l'identifiant numéro 4 pourrait correspondre à un échange de fichiers tandis que, l'identifiant numéro 5 pourrait permettre d’échanger les données d'une partie endiablée d’échecs.
+
 \end{document}
